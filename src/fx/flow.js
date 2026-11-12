@@ -106,14 +106,42 @@ void main() {
   gl_FragColor = vec4(mix(bg, dotCol, a), 1.0);
 }`;
 
+// pass 2, glow mode: the light itself, smooth, with fine film grain (no dots)
+const GLOW = `${HEAD}
+uniform sampler2D uField;
+uniform vec2 uCells;
+uniform float uCell;
+uniform float uTime;
+uniform vec3 uC0;
+uniform vec3 uC1;
+uniform vec3 uC2;
+uniform vec3 uC3;
+uniform vec3 uC4;
+
+float hash(vec2 p) { p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
+
+void main() {
+  vec2 fc = gl_FragCoord.xy;
+  float v = texture2D(uField, fc / uCell / uCells).r;
+  v = smoothstep(0.0, 1.0, v);
+  vec3 c = mix(uC0, uC1, smoothstep(0.0, 0.35, v));
+  c = mix(c, uC2, smoothstep(0.3, 0.72, v));
+  c = mix(c, uC3, smoothstep(0.68, 0.95, v));
+  c = mix(c, uC4, smoothstep(0.9, 1.0, v) * 0.5);
+  c += (hash(fc + fract(uTime * 7.0) * 91.0) - 0.5) * 0.07;
+  gl_FragColor = vec4(c, 1.0);
+}`;
+
 const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
 
 /**
  * Start the halftone glow on `canvas`, filling `host`.
- * colors: five hex colours, black to the hot core of the light. dot: spacing in CSS pixels.
+ * colors: five hex colours, black to the hot core of the light.
+ * mode: 'dots' (halftone) or 'glow' (smooth light with film grain). dot: spacing in CSS pixels.
  * Returns a function that stops it.
  */
-export function flow(canvas, host, { colors = ['#0a0a0b', '#5c060c', '#d8121d', '#ff3d47', '#ffc9cc'], dot = touch ? 7 : 9 } = {}) {
+export function flow(canvas, host, { colors = ['#0a0a0b', '#5c060c', '#d8121d', '#ff3d47', '#ffc9cc'], dot = touch ? 7 : 9, mode = 'dots' } = {}) {
+  if (mode === 'glow') dot = 10; // the light is blurry, so the field can be coarse
   const gl = canvas.getContext('webgl', { antialias: false, alpha: false, depth: false, stencil: false, powerPreference: 'low-power' });
   if (!gl) { host.classList.add('no-flow'); return () => {}; }
 
@@ -127,7 +155,7 @@ export function flow(canvas, host, { colors = ['#0a0a0b', '#5c060c', '#d8121d', 
     return gl.getProgramParameter(p, gl.LINK_STATUS) ? p : null;
   };
   const pField = program(FIELD);
-  const pDots = program(DOTS);
+  const pDots = program(mode === 'glow' ? GLOW : DOTS);
   if (!pField || !pDots) { host.classList.add('no-flow'); return () => {}; }
 
   const buf = gl.createBuffer();
@@ -138,7 +166,7 @@ export function flow(canvas, host, { colors = ['#0a0a0b', '#5c060c', '#d8121d', 
 
   const U = (p, names) => Object.fromEntries(names.map((n) => [n, gl.getUniformLocation(p, n)]));
   const uf = U(pField, ['uCells', 'uSize', 'uTime', 'uMouse', 'uPush']);
-  const ud = U(pDots, ['uField', 'uCells', 'uCell', 'uC0', 'uC1', 'uC2', 'uC3', 'uC4']);
+  const ud = U(pDots, ['uField', 'uCells', 'uCell', 'uTime', 'uC0', 'uC1', 'uC2', 'uC3', 'uC4']);
   gl.useProgram(pDots);
   colors.forEach((c, i) => gl.uniform3fv(ud[`uC${i}`], hex(c)));
   gl.uniform1i(ud.uField, 0);
@@ -183,6 +211,7 @@ export function flow(canvas, host, { colors = ['#0a0a0b', '#5c060c', '#d8121d', 
   };
 
   const t0 = performance.now() - 60000 * Math.random();
+  let placed = false;
   const draw = (now) => {
     const idle = now - lastMove > (touch ? 1800 : 2600);
     if (idle) {
@@ -196,7 +225,9 @@ export function flow(canvas, host, { colors = ['#0a0a0b', '#5c060c', '#d8121d', 
         mouse.ty = 1 - Math.max(0, Math.min(1, mid));
       }
     }
-    const ease = idle ? 0.012 : 0.07;
+    // phones: when the section first comes into view the light starts on screen instead of drifting in
+    if (touch && idle && !placed && running) { placed = true; mouse.x = mouse.tx; mouse.y = mouse.ty; }
+    const ease = idle ? (touch ? 0.03 : 0.012) : 0.07;
     mouse.x += (mouse.tx - mouse.x) * ease;
     mouse.y += (mouse.ty - mouse.y) * ease;
     mouse.push *= 0.95;
@@ -220,6 +251,7 @@ export function flow(canvas, host, { colors = ['#0a0a0b', '#5c060c', '#d8121d', 
     gl.bindTexture(gl.TEXTURE_2D, tex);
     gl.uniform2f(ud.uCells, cw, ch);
     gl.uniform1f(ud.uCell, cell);
+    if (ud.uTime) gl.uniform1f(ud.uTime, (now - t0) / 1000);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   };
 

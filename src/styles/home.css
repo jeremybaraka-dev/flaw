@@ -184,6 +184,13 @@
 .t-blood .mani__kick { border-color: rgba(255, 255, 255, 0.28); opacity: 0.75; }
 .t-blood .cctv { box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4); }
 .t-blood.rnd { box-shadow: 0 -30px 60px rgba(0, 0, 0, 0.35); }
+/* soft moving light behind the statement (src/fx/flow.js, glow mode); the plain red stays if WebGL is missing */
+.mani { isolation: isolate; }
+.mani__flow { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; opacity: 0; transition: opacity 1.2s var(--ease); }
+.mani.has-flow .mani__flow { opacity: 1; }
+/* over the light, the key words sit on black redaction bars */
+.mani.has-flow .mani__text .is-red { color: var(--bone); background: var(--ink); padding: 0 0.1em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.mani.has-flow .mani__copy p, .mani.has-flow .mani__facts { text-shadow: 0 1px 14px rgba(0, 0, 0, 0.55); }
 .mani__grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: clamp(28px, 5vw, 90px); align-items: end; margin-top: clamp(50px, 8vw, 130px); }
 .mani__copy { display: grid; gap: 18px; justify-items: start; }
 .mani__copy p { font-size: clamp(16px, 1.35vw, 21px); font-weight: 500; line-height: 1.45; max-width: 36ch; }
@@ -241,12 +248,17 @@
 .evi {
   position: relative;
   overflow: hidden;
-  /* cutting-mat grid, like the table evidence is photographed on */
+  /* the evidence board: cork, darker towards the edges */
+  background-color: #b48858;
   background-image:
-    linear-gradient(rgba(10, 10, 11, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(10, 10, 11, 0.05) 1px, transparent 1px);
-  background-size: 46px 46px;
+    radial-gradient(120% 90% at 50% 45%, transparent 55%, rgba(40, 20, 6, 0.38)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 .22 0 0 0 0 .12 0 0 0 0 .04 0 0 0 -2.4 1.45'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23c)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='l'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='2' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 .93 0 0 0 0 .78 0 0 0 0 .58 0 0 0 -3 1.5'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23l)'/%3E%3C/svg%3E");
 }
+.evi__head h2, .evi__kick, .evi__side p, .evi__foot { text-shadow: 0 1px 0 rgba(255, 236, 205, 0.25); }
+.evi__prog { background: rgba(40, 20, 6, 0.3); }
+/* small labels on cork: dark brown ink at full strength so they read */
+.evi .evi__kick, .evi .evi__hint, .evi .evi__n, .evi .evi__side p { color: #24130a; opacity: 1; font-weight: 600; }
 .evi__pin { display: flex; flex-direction: column; padding: calc(var(--rr) + clamp(40px, 6vw, 90px)) 0 calc(var(--rr) + 28px); }
 .evi.is-pinned .evi__pin { height: 100svh; padding: calc(var(--header-h) + 14px) 0 calc(var(--rr) + 12px); }
 .evi__head { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; padding-inline: var(--gutter); margin-bottom: clamp(26px, 2.6vw, 40px); }
@@ -254,7 +266,7 @@
 .evi__head h2 { font-size: clamp(38px, 5.6vw, 104px); white-space: nowrap; }
 .evi__head h2 sup { font-family: var(--f-mono); font-size: 0.17em; font-weight: 700; font-stretch: 100%; letter-spacing: 0; color: var(--red); vertical-align: top; margin-left: 0.5em; position: relative; top: 0.5em; }
 .evi__side { display: flex; align-items: center; gap: 22px; text-align: right; }
-.evi__track { display: flex; align-items: stretch; gap: clamp(14px, 1.5vw, 24px); padding: 10px var(--gutter) 0; flex: 1; min-height: 0; will-change: transform; }
+.evi__track { position: relative; display: flex; align-items: stretch; gap: clamp(14px, 1.5vw, 24px); padding: 10px var(--gutter) 0; flex: 1; min-height: 0; will-change: transform; }
 .evi__foot { display: flex; align-items: center; gap: 18px; margin: 20px var(--gutter) 0; }
 .evi__hint { opacity: 0.6; white-space: nowrap; }
 .evi__hint b { display: inline-block; color: var(--red); animation: eviNudge 1.4s var(--ease) infinite; }
@@ -283,8 +295,20 @@
 .evi.is-pinned .evb { will-change: transform; }
 .evi:not(.is-pinned) .evb { scroll-snap-align: center; width: min(74vw, 320px); }
 .evi:not(.is-pinned) .evb__win { aspect-ratio: 1 / 0.96; }
-.evb__hole { position: absolute; z-index: 3; top: 9px; left: 50%; width: 34px; height: 12px; margin-left: -17px; border-radius: 99px; background: var(--paper); box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.45); }
-.evb__band { display: flex; justify-content: space-between; align-items: flex-end; gap: 10px; padding: 30px 14px 9px; background: var(--red); color: #fff; }
+/* the bag's resealable strip, where the pin goes through */
+.evb__zip { position: relative; display: block; flex: none; height: 26px; background: linear-gradient(#fbfbfc, #ececef); border-bottom: 1px solid rgba(10, 10, 11, 0.12); }
+.evb__zip::after { content: ''; position: absolute; left: 10px; right: 10px; bottom: 6px; height: 3px; border-radius: 2px; background: repeating-linear-gradient(90deg, rgba(10, 10, 11, 0.22) 0 2px, transparent 2px 4px); }
+.evl .evb__zip { margin: -16px -16px 0; background: linear-gradient(#26262a, #1b1b1e); border-color: rgba(255, 255, 255, 0.08); }
+.evl .evb__zip::after { background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.18) 0 2px, transparent 2px 4px); }
+.evb__band { display: flex; justify-content: space-between; align-items: flex-end; gap: 10px; padding: 10px 14px 9px; background: var(--red); color: #fff; }
+
+/* pushpins and red string sit above the bags; the bags swing from their pin */
+.evb, .evl { transform-origin: 50% 13px; box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 22px 30px -16px rgba(40, 18, 4, 0.6), 0 2px 4px rgba(40, 18, 4, 0.25); }
+.evi__string { position: absolute; left: 0; top: 0; z-index: 2; overflow: visible; pointer-events: none; }
+.evi__string path { fill: none; stroke: #c3111b; stroke-width: 2; stroke-linecap: round; filter: drop-shadow(0 3px 2px rgba(40, 18, 4, 0.45)); }
+.evi__pins { position: absolute; left: 0; top: 0; z-index: 3; pointer-events: none; }
+.evi__tack { position: absolute; left: -9px; top: -9px; width: 18px; height: 18px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ff8a8a 0 10%, #e11b26 34%, #8e0a10 78%); box-shadow: 0 5px 5px -1px rgba(30, 12, 2, 0.55), inset 0 -2px 3px rgba(0, 0, 0, 0.35); }
+.evi__tack::after { content: ''; position: absolute; left: 50%; top: 50%; width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #ff9a9a, #c8121c 70%); box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3); }
 .evb__band b { font-size: 21px; letter-spacing: 0.02em; font-stretch: 100%; }
 .evb__band span { opacity: 0.85; font-size: 10px; line-height: 1.2; }
 .evb__form { display: grid; grid-template-columns: 1fr 1fr; margin: 0; padding: 4px 14px 8px; font-size: 9px; }
@@ -376,7 +400,8 @@
 .evi.is-tight .evi__kick { margin-bottom: 4px; }
 .evi.is-tight .evi__head h2 { font-size: clamp(38px, min(4.6vw, 10vh), 84px); }
 .evi.is-tight .evb__note { display: none; }
-.evi.is-tight .evb__band { padding-top: 24px; }
+.evi.is-tight .evb__band { padding-top: 8px; }
+.evi.is-tight .evb__zip { height: 22px; }
 .evi.is-tight .evb__bot { padding-block: 9px 10px; }
 .evi.is-tight .evb__go { width: 36px; height: 36px; }
 .evi.is-tight .evi__foot { margin-top: 12px; }

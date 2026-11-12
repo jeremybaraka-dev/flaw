@@ -83,7 +83,7 @@ const bag = (p) => {
   const n = p.variants.length;
   return `
     <a class="evb" href="/product/${p.handle}" data-cursor="OPEN">
-      <i class="evb__hole" aria-hidden="true"></i>
+      <span class="evb__zip" aria-hidden="true"></span>
       <div class="evb__band"><b class="d">Evidence</b><span class="mono">Exh. ${p.exhibit} / ${products.length}</span></div>
       <dl class="evb__form mono">
         <div><dt>Class</dt><dd class="mk">${CLASS[p.category] || p.category}</dd></div>
@@ -207,7 +207,8 @@ export default {
       </div>
     </section>
 
-    <section class="mani t-blood rnd">
+    <section class="mani t-blood rnd" data-mani-sec>
+      <canvas class="mani__flow" aria-hidden="true"></canvas>
       <div class="mani__kick mono"><span>File 001 / Statement</span><span>Classification: public</span></div>
       <p class="mani__text d" data-mani>${MANIFESTO.split(' ')
         .map((w) => (w.startsWith('*') ? `<span class="is-red">${w.replaceAll('*', '')}</span>` : `<span>${w}</span>`))
@@ -250,8 +251,11 @@ export default {
           </div>
         </header>
         <div class="evi__track" data-evi-track>
+          <svg class="evi__string" aria-hidden="true"><path /></svg>
+          <div class="evi__pins" aria-hidden="true"></div>
           ${featured.map(bag).join('')}
           <div class="evl">
+            <span class="evb__zip" aria-hidden="true"></span>
             <div class="evl__top mono"><span><b>+ ${rest.length}</b> more on file</span><span>Locker 02</span></div>
             <div class="evl__grid">
               ${rest.map((p) => `
@@ -432,6 +436,17 @@ export default {
     const exTimer = setInterval(nextExhibit, 4000);
     cleanups.push(() => clearInterval(exTimer));
 
+    /* statement section: soft red light drifting over black, following the pointer */
+    const maniSec = root.querySelector('[data-mani-sec]');
+    let stopGlow = () => {};
+    const glowIo = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      glowIo.disconnect();
+      stopGlow = flow(maniSec.querySelector('.mani__flow'), maniSec, { mode: 'glow', colors: ['#050101', '#3e0307', '#a80f18', '#f0202c', '#ff8a90'] });
+    }, { rootMargin: '60% 0px' });
+    glowIo.observe(maniSec);
+    cleanups.push(() => { glowIo.disconnect(); stopGlow(); });
+
     /* manifesto: words light up as you read */
     const maniWords = root.querySelectorAll('[data-mani] span');
     if (!reduced) {
@@ -483,7 +498,10 @@ export default {
       });
     };
     if (!reduced) {
-      gsap.from([...track.children], { y: 110, opacity: 0, duration: 1, ease: 'power4.out', stagger: 0.07, scrollTrigger: { trigger: track, start: 'top 82%', once: true } });
+      gsap.from(track.querySelectorAll('.evb, .evl'), { y: 110, opacity: 0, duration: 1, ease: 'power4.out', stagger: 0.07, scrollTrigger: { trigger: track, start: 'top 82%', once: true } });
+      // the pins go in once the bags have landed, then the string is pulled tight
+      gsap.from(track.querySelectorAll('.evi__tack'), { scale: 0, opacity: 0, duration: 0.45, ease: 'back.out(3)', stagger: 0.07, delay: 0.55, scrollTrigger: { trigger: track, start: 'top 82%', once: true } });
+      gsap.from(track.querySelector('.evi__string'), { opacity: 0, duration: 0.8, delay: 1.1, scrollTrigger: { trigger: track, start: 'top 82%', once: true } });
     }
     // Desktop: the bags fill the height that is left under the heading, and their width follows from it,
     // so the garment window keeps its shape on short laptop screens instead of being squashed flat.
@@ -499,6 +517,30 @@ export default {
       const w = Math.round(Math.max(210, Math.min(400, innerWidth * 0.235, (h - chrome) / 0.9)));
       track.style.setProperty('--evw', `${w}px`);
     };
+    // the board: a pushpin through the top of every bag, and red string running pin to pin
+    const pinBox = track.querySelector('.evi__pins');
+    const string = track.querySelector('.evi__string');
+    const cards = [...track.querySelectorAll('.evb, .evl')];
+    pinBox.innerHTML = cards.map(() => '<i class="evi__tack"></i>').join('');
+    const pins = [...pinBox.children];
+    const placePins = () => {
+      const pts = cards.map((c) => [c.offsetLeft + c.offsetWidth / 2, c.offsetTop + 13]);
+      pts.forEach(([x, y], i) => { pins[i].style.transform = `translate(${x}px, ${y}px)`; });
+      string.setAttribute('width', track.scrollWidth);
+      string.setAttribute('height', track.scrollHeight);
+      // each stretch of string sags a little between its two pins
+      const d = pts.map(([x, y], i) => {
+        if (!i) return `M${x} ${y}`;
+        const [px, py] = pts[i - 1];
+        return `Q${(px + x) / 2} ${Math.max(py, y) + (x - px) * 0.07} ${x} ${y}`;
+      }).join(' ');
+      string.firstElementChild.setAttribute('d', d);
+    };
+    const pinRo = new ResizeObserver(placePins);
+    pinRo.observe(track);
+    cards.forEach((c) => pinRo.observe(c));
+    cleanups.push(() => pinRo.disconnect());
+
     const mm = gsap.matchMedia();
     mm.add('(min-width: 900px) and (hover: hover) and (prefers-reduced-motion: no-preference)', () => {
       evi.classList.add('is-pinned');
