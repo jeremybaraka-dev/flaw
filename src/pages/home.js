@@ -483,9 +483,25 @@ export default {
     if (!reduced) {
       gsap.from([...track.children], { y: 110, opacity: 0, duration: 1, ease: 'power4.out', stagger: 0.07, scrollTrigger: { trigger: track, start: 'top 82%', once: true } });
     }
+    // Desktop: the bags fill the height that is left under the heading, and their width follows from it,
+    // so the garment window keeps its shape on short laptop screens instead of being squashed flat.
+    const fitBags = () => {
+      if (!evi.classList.contains('is-pinned')) return;
+      evi.classList.remove('is-tight', 'is-tighter');
+      const vh = innerHeight;
+      if (vh < 820) evi.classList.add('is-tight');
+      if (vh < 640) evi.classList.add('is-tighter');
+      const h = track.clientHeight;
+      const win = bags[0].querySelector('.evb__win');
+      const chrome = bags[0].offsetHeight - win.offsetHeight;
+      const w = Math.round(Math.max(210, Math.min(400, innerWidth * 0.235, (h - chrome) / 0.9)));
+      track.style.setProperty('--evw', `${w}px`);
+    };
     const mm = gsap.matchMedia();
     mm.add('(min-width: 900px) and (hover: hover) and (prefers-reduced-motion: no-preference)', () => {
       evi.classList.add('is-pinned');
+      fitBags();
+      ScrollTrigger.addEventListener('refreshInit', fitBags);
       gsap.ticker.add(swayTick);
       const dist = () => Math.max(0, track.scrollWidth - innerWidth);
       gsap.to(track, {
@@ -501,7 +517,12 @@ export default {
           onUpdate: (s) => { setProg(s.progress); sway = s.getVelocity(); },
         },
       });
-      return () => { evi.classList.remove('is-pinned'); gsap.ticker.remove(swayTick); };
+      return () => {
+        evi.classList.remove('is-pinned', 'is-tight', 'is-tighter');
+        track.style.removeProperty('--evw');
+        ScrollTrigger.removeEventListener('refreshInit', fitBags);
+        gsap.ticker.remove(swayTick);
+      };
     });
     cleanups.push(() => mm.revert());
     if (touch || innerWidth < 900) {

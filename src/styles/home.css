@@ -366,13 +366,23 @@
   .evl__cta:hover i { transform: translateX(8px); }
 }
 /* short laptop screens: drop the notes line so the garment keeps its room */
-@media (min-width: 900px) and (max-height: 780px) {
-  .evb__note { display: none; }
-  .evi__head h2 { font-size: clamp(38px, 4.6vw, 84px); }
-}
-@media (min-width: 900px) and (max-height: 640px) {
-  .evb__form { display: none; }
-}
+/* desktop: width comes from the height left over (set by fitBags in home.js) */
+.evi.is-pinned .evb { width: var(--evw, clamp(264px, 23.5vw, 380px)); }
+.evi.is-pinned .evl { width: max(340px, calc(var(--evw, 340px) * 1.5)); }
+/* names shrink with the card so the longest one (Camo-Flawge Pants) still fits on one line */
+.evi.is-pinned .evb__bot h3 { font-size: clamp(17px, calc((var(--evw, 380px) - 80px) / 8.4), 31px); }
+/* short laptop screens: a tighter heading and a shorter form give the garment its room */
+.evi.is-tight .evi__head { margin-bottom: 16px; }
+.evi.is-tight .evi__kick { margin-bottom: 4px; }
+.evi.is-tight .evi__head h2 { font-size: clamp(38px, min(4.6vw, 10vh), 84px); }
+.evi.is-tight .evb__note { display: none; }
+.evi.is-tight .evb__band { padding-top: 24px; }
+.evi.is-tight .evb__bot { padding-block: 9px 10px; }
+.evi.is-tight .evb__go { width: 36px; height: 36px; }
+.evi.is-tight .evi__foot { margin-top: 12px; }
+.evi.is-tighter .evi__kick, .evi.is-tighter .evi__side p { display: none; }
+.evi.is-tighter .evb__form { display: none; }
+.evi.is-tighter .evb__band b { font-size: 17px; }
 @media (max-width: 860px) {
   .evi__head { flex-direction: column; align-items: flex-start; }
   .evi__head h2 { white-space: normal; font-size: 13.5vw; }
