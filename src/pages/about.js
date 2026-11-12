@@ -1,5 +1,6 @@
 import { gsap, reduced } from '../fx/scroll.js';
 import { words } from '../fx/text.js';
+import { pic } from '../img.js';
 
 const STRIP = [9, 2, 7, 1, 3, 10, 5, 8, 6, 4];
 const VALUES = [
@@ -21,7 +22,7 @@ export default {
       </header>
 
       <div class="strip" data-strip>
-        ${STRIP.map((n) => `<figure><img src="/lineup/${n}.webp" alt="Flaw Enforcement campaign photo" loading="lazy" /></figure>`).join('')}
+        ${STRIP.map((n) => `<figure>${pic(`/lineup/${n}`, { sizes: '(max-width: 860px) 46vw, 40vw', alt: 'Flaw Enforcement campaign photo', lazy: false })}</figure>`).join('')}
       </div>
 
       <section class="about__sec">

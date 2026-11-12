@@ -1,7 +1,8 @@
 // Catalogue pulled from flawenforcement.shop (Nov 2026).
 // Plain ES module: used by the site AND by the payment API (server re-prices the cart from here).
 
-const img = (name) => `/products/${name}.webp`;
+// image "base" paths; the real files are /products/<name>-<width>.avif|webp (see src/img.js)
+const img = (name) => `/products/${name.replace(/[^a-z0-9_-]+/gi, '-')}`;
 export const SIZES = ['S', 'M', 'L', 'XL'];
 
 const raw = [

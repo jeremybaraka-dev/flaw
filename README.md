@@ -23,6 +23,8 @@ Open http://localhost:5173. `npm run build` produces the production site in `dis
 | Animations | `src/fx/` |
 
 After adding photos to `influencers/` or `raw/products/`, run `npm run images` to make the web-sized versions.
+It writes each picture in up to three widths as AVIF and WebP and records them in `src/data/images.json`;
+`src/img.js` turns that into `<picture>` tags so each phone or screen downloads only the size it needs.
 Those two source folders hold the full-size PNGs and are kept out of git to keep the repo small; the web-sized copies in `public/` are committed.
 
 ## Deploy

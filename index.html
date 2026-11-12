@@ -11,7 +11,14 @@
     <meta property="og:image" content="/lineup/9.webp" />
     <link rel="icon" href="/favicon.png" />
     <style>html,body{background:#0a0a0b;margin:0}#loader{position:fixed;inset:0;z-index:800;background:#0a0a0b;overflow:hidden}#loader.is-split{background:transparent}</style>
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/archivo-latin-wdth.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/jetbrains-mono-latin-wght.woff2" crossorigin />
     <link rel="preload" as="image" href="/brand/logo.webp" />
+    <!-- first garments on the hero rail: start downloading before the scripts run -->
+    <link rel="preload" as="image" type="image/avif" imagesrcset="/products/TZU-360.avif 360w, /products/TZU-640.avif 640w, /products/TZU-675.avif 675w" imagesizes="(max-width: 860px) 46vw, 24vw" fetchpriority="high" />
+    <link rel="preload" as="image" type="image/avif" imagesrcset="/products/frbf-360.avif 360w, /products/frbf-640.avif 640w, /products/frbf-730.avif 730w" imagesizes="(max-width: 860px) 46vw, 24vw" fetchpriority="high" />
+    <link rel="preload" as="image" type="image/avif" imagesrcset="/products/Laer3-307.avif 307w" imagesizes="(max-width: 860px) 46vw, 24vw" />
+    <link rel="preload" as="image" type="image/avif" imagesrcset="/products/dragon_irezumi-360.avif 360w, /products/dragon_irezumi-640.avif 640w, /products/dragon_irezumi-751.avif 751w" imagesizes="(max-width: 860px) 46vw, 24vw" />
     <link rel="stylesheet" href="/src/styles/index.css" />
   </head>
   <body class="is-loading">

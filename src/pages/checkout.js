@@ -4,6 +4,7 @@ import { esc } from '../fx/text.js';
 import { byHandle } from '../data/products.js';
 import { DELIVERY, priceCart, kes } from '../data/pricing.js';
 import { cart, lineImage } from '../store/cart.js';
+import { srcOf } from '../img.js';
 import { config, waLink } from '../config.js';
 import { toast } from '../components/drawer.js';
 
@@ -41,7 +42,7 @@ const summary = (deliveryId) => {
     <div class="co__lines">
       ${cart.items.map((it) => {
         const p = byHandle[it.handle];
-        return `<div class="co__line"><div class="co__thumb"><img src="${lineImage(it)}" alt="" /><b>${it.qty}</b></div><div><div class="c">${esc(p.title)}</div><div class="mono">${esc(it.variant)} / ${esc(it.size)}</div></div><div class="co__amt">${kes(p.price * it.qty)}</div></div>`;
+        return `<div class="co__line"><div class="co__thumb"><img src="${srcOf(lineImage(it), 360)}" alt="" decoding="async" /><b>${it.qty}</b></div><div><div class="c">${esc(p.title)}</div><div class="mono">${esc(it.variant)} / ${esc(it.size)}</div></div><div class="co__amt">${kes(p.price * it.qty)}</div></div>`;
       }).join('')}
     </div>
     <dl class="co__totals">

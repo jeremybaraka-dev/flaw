@@ -6,6 +6,7 @@ import { products, byHandle } from '../data/products.js';
 import { lineup } from '../data/lineup.js';
 import { kes } from '../data/pricing.js';
 import { card } from '../components/card.js';
+import { pic, srcOf, loadAhead } from '../img.js';
 import { nairobiTime } from '../components/chrome.js';
 
 // [handle, image file, height factor, hanger type]
@@ -25,12 +26,12 @@ const RAIL = [
 const HOOK = `<svg class="hang__hook" viewBox="0 0 200 74" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M100 36V24c0-4 12-5 12-13a12 12 0 1 0-24 0"/><path d="M100 36 10 66h180Z"/></svg>`;
 const CLIP = `<svg class="hang__hook" viewBox="0 0 200 74" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M100 50V24c0-4 12-5 12-13a12 12 0 1 0-24 0"/><path d="M34 52h132"/><path d="M46 44v22M154 44v22" stroke-width="9"/></svg>`;
 
-const hang = ([handle, file, f, type]) => {
+const hang = ([handle, file, f, type], i) => {
   const p = byHandle[handle];
   return `
     <a class="hang ${type ? 'hang--clip' : ''}" href="/product/${handle}" style="--f:${f}" data-cursor="OPEN" draggable="false">
       ${type ? CLIP : HOOK}
-      <img src="/products/${file}.webp" alt="${esc(p.title)}" draggable="false" />
+      ${pic(`/products/${file}`, { sizes: '(max-width: 860px) 46vw, 24vw', alt: esc(p.title), lazy: false, high: i < 5 })}
       <span class="hang__tag mono"><b>Exh. ${p.exhibit}</b>${esc(p.title)}<i>${kes(p.price)}</i></span>
     </a>`;
 };
@@ -55,7 +56,7 @@ const strip = (s, i) => {
   const pos = String(i + 1).padStart(2, '0');
   return `
     <div class="lus" data-strip="${i}" style="--fp:${FOCAL[s.img] || '50% 30%'}" role="button" tabindex="0" aria-label="Suspect ${s.no}, ${esc(s.charge)}">
-      <img class="lus__img" src="/lineup/${s.img}.webp" alt="" width="${LINEUP_W[s.img]}" height="1100" loading="lazy" draggable="false" />
+      ${pic(`/lineup/${s.img}`, { sizes: '(max-width: 860px) 60vw, 48vw', cls: 'lus__img' })}
       <i class="lus__dots"></i>
       <span class="lus__pos mono">${pos}</span>
       <span class="lus__tag c">№ ${s.no}</span>
@@ -125,6 +126,7 @@ export default {
 
   render() {
     const set = RAIL.map(hang).join('');
+    const setCopy = RAIL.map((r) => hang(r, 99)).join('');
     const featured = products.slice(0, 9);
 
     return `
@@ -142,7 +144,7 @@ export default {
 
       <div class="rail" data-rail data-cursor="DRAG">
         <div class="rail__bar"></div>
-        <div class="rail__track">${set}${set}</div>
+        <div class="rail__track">${set}${setCopy}</div>
         <div class="rail__shadow"></div>
       </div>
 
@@ -180,7 +182,7 @@ export default {
 
       <div class="mani__grid">
         <div class="cctv brk" data-cctv>
-          <video muted loop playsinline preload="none" poster="/media/hero-poster.jpg" data-src-sm="/media/hero-480.mp4" data-src-lg="/media/hero-480.mp4"></video>
+          <video muted loop playsinline preload="none" poster="/media/hero-poster.webp" data-src-sm="/media/cctv.mp4" data-src-lg="/media/cctv.mp4"></video>
           <div class="cctv__lines" aria-hidden="true"></div>
           <div class="cctv__hud mono" aria-hidden="true">
             <span><b class="cctv__rec">●</b> Rec · Cam 01</span>
@@ -248,7 +250,7 @@ export default {
           <span class="doc__stamp stamp">Enforced</span>
         </article>
         <figure class="stmt__pola" aria-hidden="true" data-pola>
-          <span class="stmt__shot"><img src="/lineup/${EXHIBITS[0][0]}.webp" alt="" width="734" height="1100" loading="lazy" /><i class="stmt__flash"></i></span>
+          <span class="stmt__shot"><img src="${srcOf(`/lineup/${EXHIBITS[0][0]}`, 480)}" alt="" width="480" height="600" loading="lazy" decoding="async" /><i class="stmt__flash"></i></span>
           <figcaption class="mk">${EXHIBITS[0][1]}</figcaption>
         </figure>
       </div>
@@ -257,7 +259,7 @@ export default {
 
     <section class="rated t-paper rnd">
       <div class="rated__media" data-rated>
-        <img src="/lineup/5.webp" alt="Two people back to back in black Tribal Zip-Up hoodies" loading="lazy" />
+        ${pic('/lineup/5', { sizes: '(max-width: 860px) 100vw, 50vw', alt: 'Two people back to back in black Tribal Zip-Up hoodies', fade: false })}
         <canvas aria-hidden="true"></canvas>
         <span class="rated__cap mono">Fig. 05 · Tribal Zip-Up · print proof</span>
       </div>
@@ -357,16 +359,22 @@ export default {
     const polaImg = pola.querySelector('img');
     const polaCap = pola.querySelector('figcaption');
     const polaFlash = pola.querySelector('.stmt__flash');
-    EXHIBITS.forEach(([n]) => { const im = new Image(); im.src = `/lineup/${n}.webp`; });
+    const polaIo = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      EXHIBITS.forEach(([n]) => { const im = new Image(); im.src = srcOf(`/lineup/${n}`, 480); });
+      polaIo.disconnect();
+    }, { rootMargin: '100% 0px' });
+    polaIo.observe(stmt);
+    cleanups.push(() => polaIo.disconnect());
     let ex = 0;
     const nextExhibit = () => {
       if (!pola.offsetParent) return;
       ex = (ex + 1) % EXHIBITS.length;
       const [n, cap] = EXHIBITS[ex];
-      if (reduced) { polaImg.src = `/lineup/${n}.webp`; polaCap.textContent = cap; return; }
+      if (reduced) { polaImg.src = srcOf(`/lineup/${n}`, 480); polaCap.textContent = cap; return; }
       gsap.timeline()
         .to(polaFlash, { opacity: 1, duration: 0.08, ease: 'none' })
-        .add(() => { polaImg.src = `/lineup/${n}.webp`; polaCap.textContent = cap; })
+        .add(() => { polaImg.src = srcOf(`/lineup/${n}`, 480); polaCap.textContent = cap; })
         .to(polaFlash, { opacity: 0, duration: 0.7, ease: 'power2.out' })
         .fromTo(pola, { scale: 1.05 }, { scale: 1, duration: 0.6, ease: 'back.out(2)' }, 0);
     };
@@ -384,6 +392,9 @@ export default {
     const video = cctv.querySelector('video');
     const io = new IntersectionObserver(([e]) => {
       if (e.isIntersecting) {
+        // on Data Saver or a slow connection the poster stays up instead of streaming the clip
+        const net = navigator.connection;
+        if (net && (net.saveData || /(^|-)2g|3g/.test(net.effectiveType || ''))) return;
         if (!video.src) video.src = innerWidth > 1100 && !touch ? video.dataset.srcLg : video.dataset.srcSm;
         video.play().catch(() => {});
       } else video.pause();
@@ -398,6 +409,7 @@ export default {
 
     /* evidence: pinned horizontal scroll on desktop, native swipe on touch */
     const evi = root.querySelector('[data-evi]');
+    cleanups.push(loadAhead(evi, '120% 0px'));
     const track = root.querySelector('[data-evi-track]');
     const prog = root.querySelector('[data-evi-prog]');
     const mm = gsap.matchMedia();
@@ -428,6 +440,7 @@ export default {
     /* lineup: ten suspects stand side by side; one steps forward at a time */
     const lu = root.querySelector('[data-lineup]');
     const wall = lu.querySelector('[data-wall]');
+    cleanups.push(loadAhead(wall, '150% 0px'));
     const strips = [...wall.querySelectorAll('.lus')];
     const lCount = lu.querySelector('[data-l-i]');
     const stacked = () => innerWidth <= 860;
@@ -496,7 +509,7 @@ export default {
     const rated = root.querySelector('[data-rated]');
     const canvas = rated.querySelector('canvas');
     const photo = rated.querySelector('img');
-    const ht = halftone(canvas, photo.getAttribute('src'), { color: '#0a0a0b', cell: 7 });
+    const ht = halftone(canvas, srcOf('/lineup/5', 800), { color: '#0a0a0b', cell: 7 });
     cleanups.push(() => ht.destroy());
     if (reduced) canvas.style.display = 'none';
     else {

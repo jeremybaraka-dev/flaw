@@ -7,6 +7,7 @@ import { card } from '../components/card.js';
 import { openDrawer, toast } from '../components/drawer.js';
 import { config, waLink } from '../config.js';
 import missing from './missing.js';
+import { pic, setPic, srcOf } from '../img.js';
 
 const usd = (n) => `$${(n / config.paypal.kesPerUsd).toFixed(0)}`;
 
@@ -50,7 +51,7 @@ export default {
             <div class="pdp__wall" aria-hidden="true"></div>
             <span class="pdp__tag mono">Exh. ${p.exhibit}</span>
             <span class="pdp__tag pdp__tag--r mono" data-view>View 01</span>
-            <img data-main src="${v0.images[0]}" alt="${esc(p.title)}" />
+            ${pic(v0.images[0], { sizes: '(max-width: 900px) 92vw, 50vw', alt: esc(p.title), lazy: false, high: true, attrs: 'data-main' })}
           </div>
           <div class="pdp__thumbs" data-thumbs></div>
         </div>
@@ -66,7 +67,7 @@ export default {
           <fieldset class="pdp__opt" ${p.variants.length < 2 ? 'hidden' : ''}>
             <legend class="mono">Colourway: <b data-vname>${esc(v0.name)}</b></legend>
             <div class="pdp__sw" data-variants>
-              ${p.variants.map((v, i) => `<button type="button" class="${i ? '' : 'is-on'}" data-v="${i}" aria-label="${esc(v.name)}" title="${esc(v.name)}"><img src="${v.images[0]}" alt="" /></button>`).join('')}
+              ${p.variants.map((v, i) => `<button type="button" class="${i ? '' : 'is-on'}" data-v="${i}" aria-label="${esc(v.name)}" title="${esc(v.name)}"><img src="${srcOf(v.images[0], 360)}" alt="" decoding="async" /></button>`).join('')}
             </div>
           </fieldset>
 
@@ -127,15 +128,15 @@ export default {
       const src = p.variants[state.v].images[i];
       root.querySelector('[data-view]').textContent = `View 0${i + 1}`;
       thumbs.querySelectorAll('button').forEach((b, n) => b.classList.toggle('is-on', n === i));
-      if (!animate || reduced) { main.src = src; return; }
+      if (!animate || reduced) { setPic(main, src); return; }
       gsap.timeline()
         .to(main, { opacity: 0, scale: 0.94, rotation: -3, duration: 0.2, ease: 'power2.in' })
-        .add(() => { main.src = src; })
+        .add(() => { setPic(main, src); })
         .to(main, { opacity: 1, scale: 1, rotation: 0, duration: 0.55, ease: 'power3.out' });
     };
     const paintThumbs = () => {
       const imgs = p.variants[state.v].images;
-      thumbs.innerHTML = imgs.map((s, i) => `<button type="button" data-i="${i}" class="${i ? '' : 'is-on'}" aria-label="View ${i + 1}"><img src="${s}" alt="" /></button>`).join('');
+      thumbs.innerHTML = imgs.map((s, i) => `<button type="button" data-i="${i}" class="${i ? '' : 'is-on'}" aria-label="View ${i + 1}"><img src="${srcOf(s, 360)}" alt="" decoding="async" /></button>`).join('');
       thumbs.hidden = imgs.length < 2;
     };
     const paintWa = () => {

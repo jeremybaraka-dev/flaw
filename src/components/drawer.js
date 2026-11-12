@@ -1,4 +1,5 @@
 import { cart, lineImage } from '../store/cart.js';
+import { srcOf } from '../img.js';
 import { byHandle } from '../data/products.js';
 import { kes } from '../data/pricing.js';
 import { lockScroll } from '../fx/scroll.js';
@@ -16,7 +17,7 @@ const lines = () =>
           const p = byHandle[it.handle];
           return `
         <div class="line">
-          <a class="line__img" href="/product/${p.handle}"><img src="${lineImage(it)}" alt="" /></a>
+          <a class="line__img" href="/product/${p.handle}"><img src="${srcOf(lineImage(it), 360)}" alt="" loading="lazy" decoding="async" /></a>
           <div>
             <a class="line__title c" href="/product/${p.handle}">${esc(p.title)}</a>
             <div class="line__meta mono">${esc(it.variant)} / ${esc(it.size)}</div>

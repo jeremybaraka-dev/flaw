@@ -2,6 +2,7 @@
 import { gsap, ScrollTrigger, lenis, reveals } from './fx/scroll.js';
 import { cover, reveal } from './fx/shutter.js';
 import { bindScramble } from './fx/text.js';
+import { markLoaded } from './img.js';
 import { setActiveNav, syncFooterReveal } from './components/chrome.js';
 import { closeDrawer } from './components/drawer.js';
 
@@ -56,6 +57,7 @@ function swap(url) {
     reveals(app);
   }, app);
   bindScramble();
+  markLoaded(app);
   ScrollTrigger.refresh();
   syncFooterReveal();
   if (url.hash) requestAnimationFrame(() => scrollToHash(url.hash, true));
