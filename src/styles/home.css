@@ -189,6 +189,7 @@
 .mani__flow { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; opacity: 0; transition: opacity 1.2s var(--ease); }
 .mani.has-flow .mani__flow { opacity: 1; }
 /* over the pattern every word sits on a black label, like cut-out evidence tape; key words in red */
+.mani.has-flow { background: #e9eaec; }
 .mani.has-flow .mani__text { line-height: 1.02; }
 .mani.has-flow .mani__text span { background: var(--ink); padding: 0.02em 0.4em 0 0.12em; margin-right: -0.28em; }
 .mani.has-flow .mani__text .is-red { color: var(--red-hot); }
@@ -655,4 +656,11 @@
   .doc__stamp { bottom: -22px; right: 10px; font-size: 34px; }
   .doc__clip { left: 50%; margin-left: -13px; }
   .doc { margin-bottom: 20px; }
+}
+
+@media (max-width: 860px) {
+  .mani.has-flow .mani__text { font-size: 11.5vw; line-height: 1.04; }
+  .mani.has-flow .mani__text span { padding: 0.04em 0.34em 0 0.1em; margin-right: -0.24em; }
+  .mani.has-flow .mani__kick { flex-direction: column; gap: 4px; }
+  .mani.has-flow .mani__copy { padding: 18px; }
 }

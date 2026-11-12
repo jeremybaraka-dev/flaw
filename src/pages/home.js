@@ -207,37 +207,6 @@ export default {
       </div>
     </section>
 
-    <section class="mani t-blood rnd" data-mani-sec>
-      <canvas class="mani__flow" aria-hidden="true"></canvas>
-      <div class="mani__kick mono"><span>File 001 / Statement</span><span>Classification: public</span></div>
-      <p class="mani__text d" data-mani>${MANIFESTO.split(' ')
-        .map((w) => (w.startsWith('*') ? `<span class="is-red">${w.replaceAll('*', '')}</span>` : `<span>${w}</span>`))
-        .join(' ')}</p>
-
-      <div class="mani__grid">
-        <div class="cctv brk" data-cctv>
-          <video muted loop playsinline preload="none" poster="/media/hero-poster.webp" data-src-sm="/media/cctv.mp4" data-src-lg="/media/cctv.mp4"></video>
-          <div class="cctv__lines" aria-hidden="true"></div>
-          <div class="cctv__hud mono" aria-hidden="true">
-            <span><b class="cctv__rec">●</b> Rec · Cam 01</span>
-            <span data-cctv-time>${nairobiTime()}</span>
-            <span>Evidence room</span>
-            <span>Case 001: "Scars built this."</span>
-          </div>
-        </div>
-        <div class="mani__copy">
-          <p data-reveal>Started in Nairobi, worn across Kenya. Flaw Enforcement is more than a streetwear label. It is a movement rooted in authenticity, identity and real human experience.</p>
-          <p data-reveal>Every scar, mistake, setback and flaw tells a story. We don't hide those stories. We wear them.</p>
-          <ul class="mani__facts mono" data-reveal>
-            <li><b class="d">15</b>Exhibits on file</li>
-            <li><b class="d">00</b>Restocks, ever</li>
-            <li><b class="d">47</b>Counties, one movement</li>
-          </ul>
-          <a class="btn btn--ghost" href="/about" data-reveal>Read the full file <span>→</span></a>
-        </div>
-      </div>
-    </section>
-
     <section class="evi t-paper rnd" data-evi>
       <div class="evi__pin">
         <header class="evi__head">
@@ -271,6 +240,37 @@ export default {
           <span class="evi__hint">${touch ? 'Swipe the evidence' : 'Keep scrolling'} <b>→</b></span>
           <div class="evi__prog"><i data-evi-prog></i></div>
           <span class="evi__n"><b data-evi-n>01</b> / ${products.length}</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="mani t-blood rnd" data-mani-sec>
+      <canvas class="mani__flow" aria-hidden="true"></canvas>
+      <div class="mani__kick mono"><span>File 001 / Statement</span><span>Classification: public</span></div>
+      <p class="mani__text d" data-mani>${MANIFESTO.split(' ')
+        .map((w) => (w.startsWith('*') ? `<span class="is-red">${w.replaceAll('*', '')}</span>` : `<span>${w}</span>`))
+        .join(' ')}</p>
+
+      <div class="mani__grid">
+        <div class="cctv brk" data-cctv>
+          <video muted loop playsinline preload="none" poster="/media/hero-poster.webp" data-src-sm="/media/cctv.mp4" data-src-lg="/media/cctv.mp4"></video>
+          <div class="cctv__lines" aria-hidden="true"></div>
+          <div class="cctv__hud mono" aria-hidden="true">
+            <span><b class="cctv__rec">●</b> Rec · Cam 01</span>
+            <span data-cctv-time>${nairobiTime()}</span>
+            <span>Evidence room</span>
+            <span>Case 001: "Scars built this."</span>
+          </div>
+        </div>
+        <div class="mani__copy">
+          <p data-reveal>Started in Nairobi, worn across Kenya. Flaw Enforcement is more than a streetwear label. It is a movement rooted in authenticity, identity and real human experience.</p>
+          <p data-reveal>Every scar, mistake, setback and flaw tells a story. We don't hide those stories. We wear them.</p>
+          <ul class="mani__facts mono" data-reveal>
+            <li><b class="d">15</b>Exhibits on file</li>
+            <li><b class="d">00</b>Restocks, ever</li>
+            <li><b class="d">47</b>Counties, one movement</li>
+          </ul>
+          <a class="btn btn--ghost" href="/about" data-reveal>Read the full file <span>→</span></a>
         </div>
       </div>
     </section>
@@ -442,7 +442,7 @@ export default {
     const glowIo = new IntersectionObserver(([e]) => {
       if (!e.isIntersecting) return;
       glowIo.disconnect();
-      stopGlow = flow(maniSec.querySelector('.mani__flow'), maniSec, { mode: 'contour', colors: ['#0a0a0b', '#7a0a10', '#c8121c', '#ff2e3a', '#f2f0ea'] });
+      stopGlow = flow(maniSec.querySelector('.mani__flow'), maniSec, { mode: 'contour', colors: ['#e9eaec', '#d6d7db', '#bfc1c6', '#9fa2a9', '#7d8088'] });
     }, { rootMargin: '60% 0px' });
     glowIo.observe(maniSec);
     cleanups.push(() => { glowIo.disconnect(); stopGlow(); });
