@@ -1,6 +1,7 @@
 import { gsap, ScrollTrigger, lenis, reduced, touch } from '../fx/scroll.js';
 import { initRail } from '../fx/rail.js';
 import { halftone } from '../fx/halftone.js';
+import { flow } from '../fx/flow.js';
 import { words, esc } from '../fx/text.js';
 import { products, byHandle } from '../data/products.js';
 import { lineup } from '../data/lineup.js';
@@ -190,6 +191,7 @@ export default {
     </div>
 
     <section class="lineup t-ink" id="lineup" data-lineup>
+      <canvas class="lineup__flow" aria-hidden="true"></canvas>
       <header class="lineup__head">
         <h2 class="d" data-split>${words('The lineup')}</h2>
         <div class="lineup__meta">
@@ -532,6 +534,15 @@ export default {
 
     /* lineup: the suspects stand side by side; one steps forward at a time */
     const lu = root.querySelector('[data-lineup]');
+    // the moving gradient only starts (and compiles its shader) once the lineup is near the screen
+    let stopFlow = () => {};
+    const flowIo = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      flowIo.disconnect();
+      stopFlow = flow(lu.querySelector('.lineup__flow'), lu);
+    }, { rootMargin: '60% 0px' });
+    flowIo.observe(lu);
+    cleanups.push(() => { flowIo.disconnect(); stopFlow(); });
     const wall = lu.querySelector('[data-wall]');
     cleanups.push(loadAhead(wall, '150% 0px'));
     const strips = [...wall.querySelectorAll('.lus')];
