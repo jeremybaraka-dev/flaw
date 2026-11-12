@@ -2,7 +2,7 @@ import { gsap, reduced } from '../fx/scroll.js';
 import { words } from '../fx/text.js';
 import { pic } from '../img.js';
 
-const STRIP = [9, 2, 7, 1, 3, 10, 5, 8, 6, 4];
+const STRIP = [9, 11, 7, 1, 3, 10, 5, 8, 2, 6, 4];
 const VALUES = [
   ['Authenticity', 'image'],
   ['Self-awareness', 'validation'],

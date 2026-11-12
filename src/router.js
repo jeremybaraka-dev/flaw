@@ -48,7 +48,6 @@ function swap(url) {
   document.title = `${page.title(params)} | FLAW ENFORCEMENT™`;
   setActiveNav(url.pathname);
   document.getElementById('footer').hidden = !!page.bare;
-  syncFooterReveal();
   lenis.scrollTo(0, { immediate: true, force: true });
   window.scrollTo(0, 0);
 

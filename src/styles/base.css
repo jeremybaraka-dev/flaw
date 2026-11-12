@@ -14,8 +14,9 @@
   --tag: #f4c20d;
   --mpesa: #3bb54a;
 
-  --f-display: 'Archivo Variable', 'Arial Black', Impact, sans-serif;
-  --f-mono: 'JetBrains Mono Variable', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  /* short stacks on purpose: every extra local font is a file the browser opens while looking for a missing glyph */
+  --f-display: 'Archivo Variable', sans-serif;
+  --f-mono: 'JetBrains Mono Variable', monospace;
 
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --ease-io: cubic-bezier(0.7, 0, 0.2, 1);
@@ -76,7 +77,7 @@ ul, ol { list-style: none; }
 
 /* word-split helper */
 .w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.08em; margin-bottom: -0.08em; }
-.w > i { display: inline-block; font-style: normal; will-change: transform; }
+.w > i { display: inline-block; font-style: normal; }
 
 /* ───────── themes ───────── */
 .t-paper { background: var(--paper); color: var(--ink); }
@@ -189,6 +190,8 @@ ul, ol { list-style: none; }
   mix-blend-mode: overlay;
   animation: grain 0.9s steps(6) infinite;
 }
+/* phones: the grain stays but holds still, which saves redrawing the whole screen six times a second */
+@media (hover: none), (max-width: 860px) { .grain { animation: none; } }
 @keyframes grain {
   0% { transform: translate(0, 0); }
   20% { transform: translate(-3%, 2%); }
@@ -523,9 +526,9 @@ body.has-reveal #app {
   box-shadow: 0 40px 80px rgba(0, 0, 0, 0.55);
 }
 body.has-reveal #footer { position: fixed; left: 0; right: 0; bottom: 0; z-index: 1; border-top: 0; }
-body.has-reveal .ftr__top,
-body.has-reveal .ftr__bar { transform: translate3d(0, calc((1 - var(--rv, 1)) * -70px), 0); opacity: calc(0.3 + var(--rv, 1) * 0.7); }
-body.has-reveal .ftr__giant { transform: translate3d(0, calc((1 - var(--rv, 1)) * 55%), 0); }
+body.has-reveal .ftr__status,
+body.has-reveal .ftr__lead,
+body.has-reveal .ftr__top { transform: translate3d(0, calc((1 - var(--rv, 1)) * -70px), 0); opacity: calc(0.3 + var(--rv, 1) * 0.7); }
 
 /* ───────── aura: slow red and amber glow ───────── */
 .aura { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
@@ -548,18 +551,39 @@ body.has-reveal .ftr__giant { transform: translate3d(0, calc((1 - var(--rv, 1)) 
 }
 
 /* ───────── footer ───────── */
-.ftr { position: relative; background: var(--ink); color: var(--bone); border-top: 1px solid var(--line); overflow: hidden; }
-.ftr__top {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr 1fr;
-  gap: 40px var(--gutter);
-  padding: clamp(48px, 7vw, 100px) var(--gutter) clamp(36px, 5vw, 70px);
+.ftr { position: relative; background: var(--ink); color: var(--bone); border-top: 1px solid var(--line); overflow: hidden; isolation: isolate; }
+/* a patrol car parked somewhere off screen: slow red and blue wash, same lights as the intro */
+.ftr__lights { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+.ftr__lights i { position: absolute; bottom: -45%; width: 60%; height: 90%; border-radius: 50%; filter: blur(70px); animation: ftrLight 3.2s ease-in-out infinite; }
+.ftr__lights i:first-child { left: -18%; background: rgba(227, 34, 43, 0.5); }
+.ftr__lights i:last-child { right: -18%; background: rgba(36, 84, 255, 0.34); animation-delay: -1.6s; }
+@keyframes ftrLight { 0%, 100% { opacity: 0.14; } 50% { opacity: 0.8; } }
+.no-motion .ftr__lights i { animation: none; opacity: 0.4; }
+
+.ftr__status { display: flex; justify-content: space-between; gap: 8px 24px; padding: 16px var(--gutter); border-bottom: 1px solid var(--line); }
+.ftr__status span { opacity: 0.7; }
+.ftr__status span:first-child { opacity: 1; }
+.ftr__dot { display: inline-block; width: 8px; height: 8px; margin-right: 10px; border-radius: 50%; background: var(--red-hot); box-shadow: 0 0 0 0 rgba(227, 34, 43, 0.7); animation: ftrDot 1.8s ease-out infinite; }
+@keyframes ftrDot { to { box-shadow: 0 0 0 10px rgba(227, 34, 43, 0); } }
+
+.ftr__lead { display: flex; justify-content: space-between; align-items: flex-end; gap: 28px var(--gutter); flex-wrap: wrap; padding: clamp(36px, 4.4vw, 68px) var(--gutter) clamp(28px, 3vw, 46px); }
+.ftr__creed { font-size: clamp(30px, 4.5vw, 84px); }
+.ftr__creed span { display: block; }
+.ftr__cta { display: flex; flex-direction: column; gap: 10px; min-width: 250px; }
+
+.ftr__top { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px var(--gutter); padding: clamp(24px, 2.6vw, 40px) var(--gutter) clamp(30px, 3.4vw, 52px); border-top: 1px solid var(--line); }
+.ftr h4 { font-family: var(--f-mono); font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.5; margin-bottom: 14px; }
+.ftr li { margin-bottom: 6px; }
+.ftr__col li > span { font-weight: 600; font-size: 15px; opacity: 0.8; }
+/* links: a red arrow slides in and the word steps aside */
+.ftr__a { position: relative; display: inline-block; font-weight: 700; font-size: 17px; transition: transform 0.45s var(--ease), color 0.3s; }
+.ftr__a::before { content: '→'; position: absolute; left: -22px; top: 0; color: var(--red-hot); opacity: 0; transform: translateX(-8px); transition: opacity 0.3s, transform 0.45s var(--ease); }
+@media (hover: hover) {
+  .ftr__a:hover { transform: translateX(22px); }
+  .ftr__a:hover::before { opacity: 1; transform: none; }
 }
-.ftr__creed { font-size: clamp(26px, 3.4vw, 54px); max-width: 12em; }
-.ftr h4 { font-family: var(--f-mono); font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.5; margin-bottom: 16px; }
-.ftr li { margin-bottom: 8px; }
-.ftr__col a, .ftr__col span { font-weight: 600; font-size: 15px; }
 .ftr__pay { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.ftr__fine { margin-top: 12px; opacity: 0.5; font-size: 10px; max-width: 24em; }
 .paymark {
   display: inline-flex;
   align-items: center;
@@ -572,33 +596,55 @@ body.has-reveal .ftr__giant { transform: translate3d(0, calc((1 - var(--rv, 1)) 
   letter-spacing: 0.1em;
 }
 .paymark--mpesa { color: var(--mpesa); border-color: currentColor; }
+
+/* the wordmark: F and ENFORCEMENT are solid, LAW is hollow. Letters rise one by one as the footer comes into view. */
 .ftr__giant {
-  display: block;
+  display: flex;
+  justify-content: center;
+  gap: 0.24em;
   width: 100%;
-  padding-inline: var(--gutter);
+  padding: 0.06em var(--gutter) 0;
   font-size: 8.3vw;
   font-stretch: 100%;
   white-space: nowrap;
-  text-align: center;
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.28);
   line-height: 0.8;
   margin-bottom: -0.06em;
+  overflow: hidden;
   user-select: none;
 }
-.ftr__giant em { font-style: normal; color: var(--red); -webkit-text-stroke: 0; }
-.ftr__bar {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 8px 24px;
-  padding: 16px var(--gutter);
-  border-top: 1px solid var(--line);
-  opacity: 0.6;
+.ftr__giant span { display: inline-block; }
+.ftr__giant b {
+  display: inline-block;
+  font-weight: inherit;
+  color: var(--red);
+  transform: translate3d(0, calc((1 - clamp(0, var(--rv, 1) * 2 - var(--i) * 0.07, 1)) * 108%), 0);
+  transition: color 0.4s, -webkit-text-stroke-color 0.4s;
 }
+.ftr__giant b.is-hollow { color: transparent; -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4); }
+@media (hover: hover) {
+  .ftr__giant:hover b.is-hollow { color: var(--bone); -webkit-text-stroke-color: var(--bone); }
+}
+.no-motion .ftr__giant b { transform: none; }
+
+.ftr__bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 24px; padding: 14px var(--gutter); border-top: 1px solid var(--line); }
+.ftr__bar > span { opacity: 0.6; }
+.ftr__up { font-family: var(--f-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 10px; }
+.ftr__up i { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; border: 1px solid currentColor; font-style: normal; transition: background 0.3s, border-color 0.3s, transform 0.45s var(--ease); }
+@media (hover: hover) { .ftr__up:hover i { background: var(--red); border-color: var(--red); transform: translateY(-4px); } }
+
 @media (max-width: 860px) {
+  .ftr__status span:nth-child(2) { display: none; }
+  .ftr__lead { flex-direction: column; align-items: stretch; }
+  .ftr__creed { font-size: 10.6vw; }
+  .ftr__cta { min-width: 0; }
   .ftr__top { grid-template-columns: 1fr 1fr; }
-  .ftr__creed { grid-column: 1 / -1; }
+  .ftr__col--wide { grid-column: 1 / -1; }
+  .ftr__giant { flex-direction: column; align-items: stretch; gap: 0; padding-top: 0.1em; }
+  .ftr__giant span { display: flex; justify-content: space-between; overflow: hidden; padding-top: 0.06em; }
+  .ftr__giant span:first-child { font-size: 29.4vw; }
+  .ftr__giant span:last-child { font-size: 10.9vw; margin-top: 0.12em; }
+  .ftr__bar { justify-content: flex-start; }
+  .ftr__bar .ftr__up { margin-left: auto; }
 }
 
 /* ───────── police tape marquee ───────── */

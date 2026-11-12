@@ -77,7 +77,7 @@ export async function runLoader(onReveal) {
   tl.to(q('.ldr__bar, .ldr__tag, .ldr__count'), { opacity: 1, duration: 0.6, stagger: 0.05 }, 0)
     .to(count, {
       v: 100,
-      duration: 3.3,
+      duration: 4.1,
       ease: 'power1.inOut',
       onUpdate: () => {
         const n = String(Math.round(count.v)).padStart(3, '0');
@@ -86,25 +86,25 @@ export async function runLoader(onReveal) {
         if (i !== lastLog) { lastLog = i; logs.forEach((x) => { x.textContent = LOGS[i]; }); }
       },
     }, 0)
-    .to(q('.lg--law .lc > span, .lg--e .lc > span, .lg--rest .lc > span'), { yPercent: 0, duration: 0.85, ease: 'power4.out', stagger: 0.03 }, 0.15)
-    // the F slams in: LAW becomes FLAW
-    .to(q('.lg--f'), { opacity: 1, scale: 1, duration: 0.26, ease: 'power4.in' }, 1.3)
-    .add(() => el.classList.add('is-alarm'), 1.56)
-    .fromTo(q('.ldr__word'), { x: -12 }, { x: 0, duration: 0.55, ease: 'elastic.out(1.3, 0.2)' }, 1.56)
-    // everything but F and E drops away
-    .to(q('.lg--law .lc > span, .lg--rest .lc > span'), { yPercent: 115, duration: 0.5, ease: 'power3.in', stagger: 0.022 }, 2.35)
-    .to(q('.ldr__tag, .ldr__count'), { opacity: 0, duration: 0.4 }, 2.9)
-    .add(lockup, 2.95)
-    .to(q('.ldr__sub'), { opacity: 1, duration: 0.5 }, 3.75)
-    .to(q('.ldr__line'), { scaleX: 1, duration: 0.45, ease: 'power3.inOut' }, 4.15)
+    .to(q('.lg--law .lc > span, .lg--e .lc > span, .lg--rest .lc > span'), { yPercent: 0, duration: 0.8, ease: 'power4.out', stagger: 0.026 }, 0.15)
+    // LAW ENFORCEMENT is held long enough to read, then the F slams in: LAW becomes FLAW
+    .to(q('.lg--f'), { opacity: 1, scale: 1, duration: 0.32, ease: 'power4.in' }, 1.9)
+    .add(() => el.classList.add('is-alarm'), 2.22)
+    .fromTo(q('.ldr__word'), { x: -12 }, { x: 0, duration: 0.55, ease: 'elastic.out(1.3, 0.2)' }, 2.22)
+    // FLAW ENFORCEMENT is held for a beat, then everything but F and E drops away
+    .to(q('.lg--law .lc > span, .lg--rest .lc > span'), { yPercent: 115, duration: 0.5, ease: 'power3.in', stagger: 0.022 }, 3.25)
+    .to(q('.ldr__tag, .ldr__count'), { opacity: 0, duration: 0.4 }, 3.8)
+    .add(lockup, 3.85)
+    .to(q('.ldr__sub'), { opacity: 1, duration: 0.5 }, 4.6)
+    .to(q('.ldr__line'), { scaleX: 1, duration: 0.45, ease: 'power3.inOut' }, 4.95)
     .add(() => {
       clearNow();
       el.classList.add('is-split');
       onReveal?.();
-    }, 4.6)
-    .to(q('.ldr__half--top'), { yPercent: -101, duration: 0.95, ease: 'power4.inOut' }, 4.6)
-    .to(q('.ldr__half--bot'), { yPercent: 101, duration: 0.95, ease: 'power4.inOut' }, 4.6)
-    .to(q('.ldr__line'), { opacity: 0, duration: 0.3 }, 4.75);
+    }, 5.35)
+    .to(q('.ldr__half--top'), { yPercent: -101, duration: 0.95, ease: 'power4.inOut' }, 5.35)
+    .to(q('.ldr__half--bot'), { yPercent: 101, duration: 0.95, ease: 'power4.inOut' }, 5.35)
+    .to(q('.ldr__line'), { opacity: 0, duration: 0.3 }, 5.5);
 
   await tl.then();
   done();

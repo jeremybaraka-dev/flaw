@@ -140,27 +140,51 @@ export function initChrome() {
     logo.classList.toggle('is-hidden', hide);
   });
 
-  document.getElementById('footer').innerHTML = `
+  // the wordmark, one letter at a time: F + ENFORCEMENT solid, LAW hollow (LAW becomes FLAW)
+  let gi = 0;
+  const glyphs = (word, hollow = '') => `<span>${word.split('').map((c) => `<b style="--i:${gi++}"${hollow.includes(c) ? ' class="is-hollow"' : ''}>${c}</b>`).join('')}</span>`;
+
+  ftr.innerHTML = `
+    <div class="ftr__lights" aria-hidden="true"><i></i><i></i></div>
+    <div class="ftr__status mono">
+      <span><b class="ftr__dot"></b>Case 001 · Still open</span>
+      <span>Dispatching across Kenya · all 47 counties</span>
+      <span>EAT <span data-fclock>${nairobiTime()}</span></span>
+    </div>
+    <div class="ftr__lead">
+      <p class="ftr__creed d"><span>We don't hide flaws.</span> <span class="red">We enforce them.</span></p>
+      <div class="ftr__cta">
+        <a class="btn btn--red" href="/shop">Open the locker <span>→</span></a>
+        <a class="btn btn--ghost" href="${waLink('Hi, I would like to place an order from FLAW ENFORCEMENT.')}" target="_blank" rel="noopener">Order on WhatsApp ↗</a>
+      </div>
+    </div>
     <div class="ftr__top">
-      <p class="ftr__creed d">We don't hide flaws. <span class="red">We enforce them.</span></p>
       <div class="ftr__col">
         <h4>Files</h4>
         <ul>
-          <li><a class="link" href="/shop">Shop all</a></li>
-          <li><a class="link" href="/#lineup">The lineup</a></li>
-          <li><a class="link" href="/about">About</a></li>
-          <li><a class="link" href="/support">Support and FAQ</a></li>
+          <li><a class="ftr__a" href="/shop">Shop all</a></li>
+          <li><a class="ftr__a" href="/#lineup">The lineup</a></li>
+          <li><a class="ftr__a" href="/about">About</a></li>
+          <li><a class="ftr__a" href="/support">Support and FAQ</a></li>
         </ul>
       </div>
       <div class="ftr__col">
         <h4>Contact</h4>
         <ul>
-          <li><a class="link" href="${config.instagram}" target="_blank" rel="noopener">Instagram ↗</a></li>
-          <li><a class="link" href="${waLink('Hi, I would like to place an order from FLAW ENFORCEMENT.')}" target="_blank" rel="noopener">WhatsApp ↗</a></li>
+          <li><a class="ftr__a" href="${config.instagram}" target="_blank" rel="noopener">Instagram ↗</a></li>
+          <li><a class="ftr__a" href="${waLink('Hi, I have a question about FLAW ENFORCEMENT.')}" target="_blank" rel="noopener">WhatsApp ↗</a></li>
           <li><span>Kenya, countrywide</span></li>
         </ul>
       </div>
       <div class="ftr__col">
+        <h4>The rules</h4>
+        <ul>
+          <li><span>Limited pieces</span></li>
+          <li><span>No restocks, ever</span></li>
+          <li><span>No two the same</span></li>
+        </ul>
+      </div>
+      <div class="ftr__col ftr__col--wide">
         <h4>We accept</h4>
         <div class="ftr__pay">
           <span class="paymark paymark--mpesa">M-PESA</span>
@@ -168,14 +192,18 @@ export function initChrome() {
           <span class="paymark">VISA</span>
           <span class="paymark">MASTERCARD</span>
         </div>
+        <p class="ftr__fine mono">Prices in KSh. Secure checkout.</p>
       </div>
     </div>
-    <div class="ftr__giant d" aria-hidden="true">Flaw <em>Enforcement</em></div>
+    <div class="ftr__giant d" aria-hidden="true">${glyphs('FLAW', 'LAW')}${glyphs('ENFORCEMENT')}</div>
     <div class="ftr__bar mono">
       <span>© ${new Date().getFullYear()} Flaw Enforcement™. All flaws reserved.</span>
       <span>Case 001: "Scars built this."</span>
-      <span>Product rated FE</span>
+      <button class="ftr__up" type="button" data-top>Back to the top <i aria-hidden="true">↑</i></button>
     </div>`;
+  ftr.querySelector('[data-top]').addEventListener('click', () => lenis.scrollTo(0, { duration: reduced ? 0 : 1.6 }));
+  const fclock = ftr.querySelector('[data-fclock]');
+  setInterval(() => { fclock.textContent = nairobiTime(); }, 1000);
 }
 
 export function setActiveNav(path) {

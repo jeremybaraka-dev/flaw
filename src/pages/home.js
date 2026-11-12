@@ -5,7 +5,6 @@ import { words, esc } from '../fx/text.js';
 import { products, byHandle } from '../data/products.js';
 import { lineup } from '../data/lineup.js';
 import { kes } from '../data/pricing.js';
-import { card } from '../components/card.js';
 import { pic, srcOf, loadAhead } from '../img.js';
 import { nairobiTime } from '../components/chrome.js';
 
@@ -36,7 +35,6 @@ const hang = ([handle, file, f, type], i) => {
     </a>`;
 };
 
-const LINEUP_W = {"1":734,"2":879,"3":825,"4":734,"5":880,"6":917,"7":828,"8":826,"9":879,"10":880};
 const MARKS = ["6'6", "6'4", "6'2", "6'0", "5'10", "5'8", "5'6", "5'4", "5'2", "5'0", "4'10", "4'8", "4'6", "4'4"];
 const marks = (side) =>
   `<div class="hero__marks hero__marks--${side} mono" aria-hidden="true">${MARKS.map((m, i) => `<span style="--i:${i}">${m}"</span>`).join('')}</div>`;
@@ -49,7 +47,7 @@ const tape = (text, cls = '') => {
 const MANIFESTO = "Every scar, setback and wrong turn is *evidence.* We don't hide it. We *enforce* it.";
 
 // where each lineup photo should be cropped so faces stay in frame
-const FOCAL = { 1: '50% 30%', 2: '38% 22%', 3: '50% 34%', 4: '42% 22%', 5: '42% 28%', 6: '40% 24%', 7: '52% 26%', 8: '30% 28%', 9: '50% 36%', 10: '56% 24%' };
+const FOCAL = { 1: '50% 30%', 2: '38% 22%', 3: '50% 34%', 4: '42% 22%', 5: '42% 28%', 6: '40% 24%', 7: '52% 26%', 8: '30% 28%', 9: '50% 36%', 10: '56% 24%', 11: '50% 16%' };
 
 const strip = (s, i) => {
   const p = byHandle[s.wearing];
@@ -76,19 +74,51 @@ const strip = (s, i) => {
 
 const LINEUP_DUR = 3800;
 
+const CLASS = { outerwear: 'Outerwear', tops: 'Top', tees: 'Tee', bottoms: 'Bottoms', sets: 'Set' };
+const BAG_SIZES = '(max-width: 860px) 70vw, 24vw';
+
+/** An exhibit sealed in an evidence bag: red header band, hand-filled form, the garment behind plastic. */
+const bag = (p) => {
+  const n = p.variants.length;
+  return `
+    <a class="evb" href="/product/${p.handle}" data-cursor="OPEN">
+      <i class="evb__hole" aria-hidden="true"></i>
+      <div class="evb__band"><b class="d">Evidence</b><span class="mono">Exh. ${p.exhibit} / ${products.length}</span></div>
+      <dl class="evb__form mono">
+        <div><dt>Class</dt><dd class="mk">${CLASS[p.category] || p.category}</dd></div>
+        <div><dt>${n > 1 ? 'Colourways' : 'Colourway'}</dt><dd class="mk">${n > 1 ? n : esc(p.variants[0].name)}</dd></div>
+        <div class="evb__note"><dt>Notes</dt><dd class="mk">${esc(p.hook)}</dd></div>
+      </dl>
+      <div class="evb__seal mono" aria-hidden="true"><span>${'Sealed · FE · Do not perfect · '.repeat(4)}</span><span>Break the seal →</span></div>
+      <div class="evb__win">
+        ${pic(p.image, { sizes: BAG_SIZES, alt: esc(p.title), cls: 'evb__a' })}
+        ${pic(p.alt, { sizes: BAG_SIZES, cls: 'evb__b' })}
+        <i class="evb__glare" aria-hidden="true"></i>
+        <i class="evb__scale" aria-hidden="true"></i>
+        <b class="evb__mark" aria-hidden="true">${Number(p.exhibit)}</b>
+      </div>
+      <div class="evb__bot">
+        <h3>${esc(p.title)}</h3>
+        <span class="evb__price mono">${kes(p.price)}</span>
+        <i class="evb__go" aria-hidden="true">→</i>
+      </div>
+    </a>`;
+};
+
 const now = new Date();
 const stampDate = now.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' }).toUpperCase();
 const filed = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
 
 // photos the pinned polaroid cycles through on the correction notice
 const EXHIBITS = [
-  [1, 'exhibit A. still flawless.'],
-  [9, 'exhibit B. the whole crew.'],
-  [3, 'exhibit C. the wall took the L.'],
-  [2, 'exhibit D. caught walking.'],
-  [10, 'exhibit E. lights, camera.'],
-  [5, 'exhibit F. no faces, no case.'],
-  [7, 'exhibit G. repeat offenders.'],
+  [11, 'exhibit A. no passengers.'],
+  [1, 'exhibit B. still flawless.'],
+  [9, 'exhibit C. the whole crew.'],
+  [3, 'exhibit D. the wall took the L.'],
+  [2, 'exhibit E. caught walking.'],
+  [10, 'exhibit F. lights, camera.'],
+  [5, 'exhibit G. no faces, no case.'],
+  [7, 'exhibit H. repeat offenders.'],
 ];
 
 /** Each character in its own span so it can be typed out. */
@@ -128,6 +158,7 @@ export default {
     const set = RAIL.map(hang).join('');
     const setCopy = RAIL.map((r) => hang(r, 99)).join('');
     const featured = products.slice(0, 9);
+    const rest = products.slice(featured.length);
 
     return `
     <section class="hero" id="top">
@@ -162,11 +193,11 @@ export default {
       <header class="lineup__head">
         <h2 class="d" data-split>${words('The lineup')}</h2>
         <div class="lineup__meta">
-          <p class="mono">10 suspects booked. All guilty of the same thing: <span class="red">refusing to be perfect.</span></p>
+          <p class="mono">${lineup.length} suspects booked. All guilty of the same thing: <span class="red">refusing to be perfect.</span></p>
           <div class="lineup__count"><b data-l-i>01</b><span>/${String(lineup.length).padStart(2, '0')}</span></div>
         </div>
       </header>
-      <div class="lwall" data-wall style="--dur:${LINEUP_DUR}ms">${lineup.map(strip).join('')}</div>
+      <div class="lwall" data-wall style="--dur:${LINEUP_DUR}ms;--n:${lineup.length}">${lineup.map(strip).join('')}</div>
       <div class="lineup__foot">
         <p class="mono lineup__hint">${touch ? 'Tap a suspect to pull their file' : 'Hover a suspect to pull their file'}</p>
         <p class="d">Got booked in <span class="red">FE?</span></p>
@@ -209,21 +240,32 @@ export default {
         <header class="evi__head">
           <div>
             <div class="mono evi__kick">Case 001 · Evidence locker</div>
-            <h2 class="d" data-split>${words('The evidence')}</h2>
+            <h2 class="d" data-split>${words('The evidence')}<sup>(${products.length})</sup></h2>
           </div>
           <div class="evi__side">
-            <p class="mono">Limited pieces. No restocks.<br />No two are the same.</p>
-            <a class="btn btn--ink" href="/shop">View all 15 <span>→</span></a>
+            <p class="mono">Bagged, tagged and sealed.<br />Limited pieces. No restocks.</p>
+            <a class="btn btn--ink" href="/shop">View all ${products.length} <span>→</span></a>
           </div>
         </header>
         <div class="evi__track" data-evi-track>
-          ${featured.map((p) => card(p)).join('')}
-          <a class="exh exh--more" href="/shop" data-cursor="ALL">
-            <span class="mono">+ ${products.length - featured.length} more on file</span>
-            <span class="d">Open the<br />locker →</span>
-          </a>
+          ${featured.map(bag).join('')}
+          <div class="evl">
+            <div class="evl__top mono"><span><b>+ ${rest.length}</b> more on file</span><span>Locker 02</span></div>
+            <div class="evl__grid">
+              ${rest.map((p) => `
+                <a class="evl__it" href="/product/${p.handle}" data-cursor="OPEN" aria-label="${esc(p.title)}, ${kes(p.price)}">
+                  ${pic(p.image, { sizes: '(max-width: 860px) 26vw, 11vw', alt: '' })}
+                  <span class="mono">${p.exhibit}</span>
+                </a>`).join('')}
+            </div>
+            <a class="evl__cta" href="/shop" data-cursor="ALL"><span class="d">Open the<br />locker</span><i aria-hidden="true">→</i></a>
+          </div>
         </div>
-        <div class="evi__prog" aria-hidden="true"><i data-evi-prog></i></div>
+        <div class="evi__foot mono" aria-hidden="true">
+          <span class="evi__hint">${touch ? 'Swipe the evidence' : 'Keep scrolling'} <b>→</b></span>
+          <div class="evi__prog"><i data-evi-prog></i></div>
+          <span class="evi__n"><b data-evi-n>01</b> / ${products.length}</span>
+        </div>
       </div>
     </section>
 
@@ -303,14 +345,21 @@ export default {
     }
 
     /* tapes: marquee that speeds up and reverses with the scroll */
-    const tapes = [...root.querySelectorAll('[data-tape]')].map((el, i) => ({ el, set: el.firstElementChild, x: 0, dir: i % 2 ? 1 : -1 }));
+    const tapes = [...root.querySelectorAll('[data-tape]')].map((el, i) => ({ el, set: el.firstElementChild, x: 0, w: 1, dir: i % 2 ? 1 : -1 }));
+    const tapeBox = root.querySelector('.tapes');
+    const tapeRo = new ResizeObserver(() => tapes.forEach((t) => { t.w = t.set.offsetWidth || 1; }));
+    tapes.forEach((t) => tapeRo.observe(t.set));
+    let tapesSeen = true;
+    const tapeIo = new IntersectionObserver(([e]) => { tapesSeen = e.isIntersecting; }, { rootMargin: '120px' });
+    tapeIo.observe(tapeBox);
     let boost = 0;
     const onScroll = ({ velocity }) => { boost = velocity; };
     lenis.on('scroll', onScroll);
     const tapeTick = () => {
       boost *= 0.92;
+      if (!tapesSeen) return;
       for (const t of tapes) {
-        const w = t.set.offsetWidth || 1;
+        const w = t.w;
         t.x += (reduced ? 0 : 0.9 + Math.abs(boost) * 0.5) * t.dir * (boost < -0.5 ? -1 : 1);
         if (t.x <= -w) t.x += w;
         if (t.x > 0) t.x -= w;
@@ -318,7 +367,7 @@ export default {
       }
     };
     gsap.ticker.add(tapeTick);
-    cleanups.push(() => { gsap.ticker.remove(tapeTick); lenis.off('scroll', onScroll); });
+    cleanups.push(() => { gsap.ticker.remove(tapeTick); lenis.off('scroll', onScroll); tapeRo.disconnect(); tapeIo.disconnect(); });
 
     /* phones: hero title lines fill the column; refit on resize */
     fitHero(root);
@@ -412,9 +461,32 @@ export default {
     cleanups.push(loadAhead(evi, '120% 0px'));
     const track = root.querySelector('[data-evi-track]');
     const prog = root.querySelector('[data-evi-prog]');
+    const eviN = root.querySelector('[data-evi-n]');
+    const bags = [...track.querySelectorAll('.evb')];
+    const setProg = (p) => {
+      prog.style.transform = `scaleX(${p})`;
+      eviN.textContent = String(1 + Math.round(Math.min(1, p * 1.12) * (bags.length - 1))).padStart(2, '0');
+    };
+    // the bags hang from their top edge and sway with the speed of the scroll
+    let sway = 0;
+    const lean = bags.map(() => 0);
+    const setLean = bags.map((b) => gsap.quickSetter(b, 'rotation', 'deg'));
+    const swayTick = () => {
+      sway *= 0.9;
+      const target = Math.max(-3.2, Math.min(3.2, sway / -700));
+      if (Math.abs(target) < 0.01 && lean.every((l) => Math.abs(l) < 0.01)) return;
+      lean.forEach((l, i) => {
+        lean[i] = l + (target - l) * (0.16 - (i % 4) * 0.025);
+        setLean[i](lean[i]);
+      });
+    };
+    if (!reduced) {
+      gsap.from([...track.children], { y: 110, opacity: 0, duration: 1, ease: 'power4.out', stagger: 0.07, scrollTrigger: { trigger: track, start: 'top 82%', once: true } });
+    }
     const mm = gsap.matchMedia();
     mm.add('(min-width: 900px) and (hover: hover) and (prefers-reduced-motion: no-preference)', () => {
       evi.classList.add('is-pinned');
+      gsap.ticker.add(swayTick);
       const dist = () => Math.max(0, track.scrollWidth - innerWidth);
       gsap.to(track, {
         x: () => -dist(),
@@ -426,18 +498,18 @@ export default {
           pin: true,
           scrub: 0.6,
           invalidateOnRefresh: true,
-          onUpdate: (s) => { prog.style.transform = `scaleX(${s.progress})`; },
+          onUpdate: (s) => { setProg(s.progress); sway = s.getVelocity(); },
         },
       });
-      return () => evi.classList.remove('is-pinned');
+      return () => { evi.classList.remove('is-pinned'); gsap.ticker.remove(swayTick); };
     });
     cleanups.push(() => mm.revert());
     if (touch || innerWidth < 900) {
-      const onTrack = () => { prog.style.transform = `scaleX(${track.scrollLeft / Math.max(1, track.scrollWidth - track.clientWidth)})`; };
+      const onTrack = () => setProg(track.scrollLeft / Math.max(1, track.scrollWidth - track.clientWidth));
       track.addEventListener('scroll', onTrack, { passive: true });
     }
 
-    /* lineup: ten suspects stand side by side; one steps forward at a time */
+    /* lineup: the suspects stand side by side; one steps forward at a time */
     const lu = root.querySelector('[data-lineup]');
     const wall = lu.querySelector('[data-wall]');
     cleanups.push(loadAhead(wall, '150% 0px'));

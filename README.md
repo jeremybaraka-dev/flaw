@@ -23,9 +23,29 @@ Open http://localhost:5173. `npm run build` produces the production site in `dis
 | Animations | `src/fx/` |
 
 After adding photos to `influencers/` or `raw/products/`, run `npm run images` to make the web-sized versions.
+It only processes pictures that are new or changed, so it takes a few seconds (`npm run images -- --all` rebuilds everything).
 It writes each picture in up to three widths as AVIF and WebP and records them in `src/data/images.json`;
 `src/img.js` turns that into `<picture>` tags so each phone or screen downloads only the size it needs.
 Those two source folders hold the full-size PNGs and are kept out of git to keep the repo small; the web-sized copies in `public/` are committed.
+
+### Adding a lineup photo
+
+1. Save it in `influencers/` named with the next number (`12.png`, `13.png`, ...).
+2. Run `npm run images`.
+3. Add a line for it in `src/data/lineup.js` (its number, a suspect number, a charge, and the product it is wearing). That puts it on the lineup wall.
+4. Optional: add the number to `STRIP` in `src/pages/about.js` and to `EXHIBITS` in `src/pages/home.js` (the polaroid), and a face position in `FOCAL` in `src/pages/home.js` if the crop cuts the head off.
+
+## Speed
+
+```bash
+npm run speed
+```
+
+Runs Google's Lighthouse against the live site as a mid-range phone on slow 4G and as a desktop, and prints the score and the timings. Pass another address to test something else, for example `npm run speed -- http://localhost:4173` after `npm run build` and `npm run preview`.
+
+The numbers come from this computer pretending to be a phone, so treat them as a guide. For real phones on real networks use https://pagespeed.web.dev, and try the site on an actual low-end Android on mobile data before a big drop.
+
+The first visit plays a 5 second intro, which lab tests count against the score (they see a covered page). The site is built so the heavy start-up work happens before the intro animation begins, not during it.
 
 ## Deploy
 
