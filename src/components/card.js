@@ -11,6 +11,8 @@ export function card(p, { eager = false } = {}) {
     <a class="exh brk" href="/product/${p.handle}" data-cursor="VIEW" data-cat="${p.category}">
       <div class="exh__top mono"><span>Exh. ${p.exhibit}</span><span>${n > 1 ? `${n} colourways` : p.category}</span></div>
       <div class="exh__img">
+        <svg class="exh__chains" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M3 0 L27 15 M97 0 L73 15" /></svg>
+        <i class="exh__clip" style="left:27%;top:15%" aria-hidden="true"></i><i class="exh__clip" style="left:73%;top:15%" aria-hidden="true"></i>
         ${pic(p.image, { sizes: CARD_SIZES, alt: esc(p.title), cls: 'exh__a', lazy: !eager })}
         ${pic(p.alt, { sizes: CARD_SIZES, cls: 'exh__b' })}
       </div>

@@ -48,7 +48,12 @@ export default {
       <div class="pdp__grid">
         <div class="pdp__gallery">
           <div class="pdp__stage brk" data-stage>
-            <div class="pdp__wall" aria-hidden="true"></div>
+            <div class="case" aria-hidden="true">
+              <i class="case__wire"></i>
+              <svg class="case__hook" viewBox="0 0 200 74" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M100 36V24c0-4 12-5 12-13a12 12 0 1 0-24 0"/><path d="M100 36 10 66h180Z"/></svg>
+              <div class="case__glass"><span class="case__cap mono"><b>Flaw Enforcement</b><span>Evidence</span></span></div>
+              <div class="case__base mono"><span>Exhibit ${p.exhibit}</span><span>Do not perfect</span></div>
+            </div>
             <span class="pdp__tag mono">Exh. ${p.exhibit}</span>
             <span class="pdp__tag pdp__tag--r mono" data-view>View 01</span>
             ${pic(v0.images[0], { sizes: '(max-width: 900px) 92vw, 50vw', alt: esc(p.title), lazy: false, high: true, attrs: 'data-main' })}

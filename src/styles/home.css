@@ -184,13 +184,17 @@
 .t-blood .mani__kick { border-color: rgba(255, 255, 255, 0.28); opacity: 0.75; }
 .t-blood .cctv { box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4); }
 .t-blood.rnd { box-shadow: 0 -30px 60px rgba(0, 0, 0, 0.35); }
-/* soft moving police-blue light behind the statement (src/fx/flow.js, glow mode); the plain red stays if WebGL is missing */
+/* wavy contour pattern behind the statement (src/fx/flow.js, contour mode); the plain red stays if WebGL is missing */
 .mani { isolation: isolate; }
 .mani__flow { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; opacity: 0; transition: opacity 1.2s var(--ease); }
 .mani.has-flow .mani__flow { opacity: 1; }
-/* over the light, the key words sit on black redaction bars */
-.mani.has-flow .mani__text .is-red { color: var(--bone); background: var(--ink); padding: 0 0.1em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
-.mani.has-flow .mani__copy p, .mani.has-flow .mani__facts { text-shadow: 0 1px 14px rgba(0, 0, 0, 0.55); }
+/* over the pattern every word sits on a black label, like cut-out evidence tape; key words in red */
+.mani.has-flow .mani__text { line-height: 1.02; }
+.mani.has-flow .mani__text span { background: var(--ink); padding: 0.02em 0.4em 0 0.12em; margin-right: -0.28em; }
+.mani.has-flow .mani__text .is-red { color: var(--red-hot); }
+.mani.has-flow .mani__kick { background: var(--ink); padding: 10px 14px; border: 0; opacity: 1; border-radius: 6px; }
+.mani.has-flow .mani__copy { background: rgba(10, 10, 11, 0.92); padding: clamp(20px, 2.4vw, 32px); border-radius: 14px; }
+.mani.has-flow .cctv { box-shadow: 0 0 0 6px var(--ink), 0 30px 60px rgba(0, 0, 0, 0.5); }
 .mani__grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: clamp(28px, 5vw, 90px); align-items: end; margin-top: clamp(50px, 8vw, 130px); }
 .mani__copy { display: grid; gap: 18px; justify-items: start; }
 .mani__copy p { font-size: clamp(16px, 1.35vw, 21px); font-weight: 500; line-height: 1.45; max-width: 36ch; }
@@ -238,6 +242,15 @@
   transition: opacity 0.45s, transform 0.75s var(--ease);
 }
 .exh__b { opacity: 0; transform: scale(0.92) rotate(4deg); }
+/* ball chains from the top corners to the garment, with a snap clip at each end */
+.exh__chains { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.exh__chains path { fill: none; stroke: #4c4f56; stroke-width: 3.4; stroke-linecap: round; stroke-dasharray: 0 5.2; vector-effect: non-scaling-stroke; }
+.exh__clip { position: absolute; z-index: 2; width: 9px; height: 15px; margin: -13px 0 0 -4.5px; border: 2px solid #3d4046; border-radius: 5px 5px 3px 3px; background: linear-gradient(90deg, #8d9097, #d8d9dc 45%, #6c6f75); pointer-events: none; }
+.exh__img img { z-index: 0; }
+@media (hover: hover) {
+  .exh .exh__img { transition: transform 0.6s var(--ease); transform-origin: 50% 0; }
+  .exh:hover .exh__img { transform: translateY(-4px); }
+}
 .exh:hover .exh__a { opacity: 0; transform: scale(0.92) rotate(-4deg); }
 .exh:hover .exh__b { opacity: 1; transform: none; }
 .exh__bot { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; padding-top: 12px; border-top: 1px solid var(--paper-line); }

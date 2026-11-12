@@ -132,16 +132,40 @@ void main() {
   gl_FragColor = vec4(c, 1.0);
 }`;
 
+// pass 2, contour mode: the light cut into flat nested bands (black, then four colours inwards)
+const CONTOUR = `${HEAD}
+uniform sampler2D uField;
+uniform vec2 uCells;
+uniform float uCell;
+uniform float uTime;
+uniform vec3 uC0;
+uniform vec3 uC1;
+uniform vec3 uC2;
+uniform vec3 uC3;
+uniform vec3 uC4;
+
+void main() {
+  float v = texture2D(uField, gl_FragCoord.xy / uCell / uCells).r;
+  float e = 0.007;
+  vec3 c = uC0;
+  c = mix(c, uC1, smoothstep(0.14 - e, 0.14 + e, v));
+  c = mix(c, uC2, smoothstep(0.27 - e, 0.27 + e, v));
+  c = mix(c, uC3, smoothstep(0.40 - e, 0.40 + e, v));
+  c = mix(c, uC4, smoothstep(0.53 - e, 0.53 + e, v));
+  gl_FragColor = vec4(c, 1.0);
+}`;
+
 const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
 
 /**
  * Start the halftone glow on `canvas`, filling `host`.
  * colors: five hex colours, black to the hot core of the light.
- * mode: 'dots' (halftone) or 'glow' (smooth light with film grain). dot: spacing in CSS pixels.
+ * mode: 'dots' (halftone), 'glow' (smooth light with film grain) or 'contour' (flat nested bands). dot: spacing in CSS pixels.
  * Returns a function that stops it.
  */
 export function flow(canvas, host, { colors = ['#0a0a0b', '#5c060c', '#d8121d', '#ff3d47', '#ffc9cc'], dot = touch ? 7 : 9, mode = 'dots' } = {}) {
   if (mode === 'glow') dot = 10; // the light is blurry, so the field can be coarse
+  if (mode === 'contour') dot = 5; // band edges need a finer field to stay smooth
   const gl = canvas.getContext('webgl', { antialias: false, alpha: false, depth: false, stencil: false, powerPreference: 'low-power' });
   if (!gl) { host.classList.add('no-flow'); return () => {}; }
 
@@ -155,7 +179,7 @@ export function flow(canvas, host, { colors = ['#0a0a0b', '#5c060c', '#d8121d', 
     return gl.getProgramParameter(p, gl.LINK_STATUS) ? p : null;
   };
   const pField = program(FIELD);
-  const pDots = program(mode === 'glow' ? GLOW : DOTS);
+  const pDots = program(mode === 'glow' ? GLOW : mode === 'contour' ? CONTOUR : DOTS);
   if (!pField || !pDots) { host.classList.add('no-flow'); return () => {}; }
 
   const buf = gl.createBuffer();

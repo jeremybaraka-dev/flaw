@@ -27,8 +27,21 @@
   -webkit-mask-image: linear-gradient(to bottom, transparent, #000 60%);
   mask-image: linear-gradient(to bottom, transparent, #000 60%);
 }
+/* the glass display case the piece hangs in */
+.pdp__stage { background: radial-gradient(80% 70% at 50% 30%, #eceded 0%, #c9cacf 55%, #a3a5ab 100%); }
+.case { position: absolute; inset: 0; pointer-events: none; }
+.case__glass { position: absolute; left: 16%; right: 16%; top: 7%; bottom: 15%; z-index: 3; border: 1.5px solid rgba(255, 255, 255, 0.85); border-radius: 3px; background: linear-gradient(118deg, rgba(255, 255, 255, 0.38) 0%, rgba(255, 255, 255, 0.06) 32%, rgba(255, 255, 255, 0) 55%, rgba(255, 255, 255, 0.14) 100%); box-shadow: inset 0 0 0 1px rgba(10, 10, 11, 0.08), inset 0 0 60px rgba(255, 255, 255, 0.35), 0 30px 50px -20px rgba(0, 0, 0, 0.35); }
+.case__glass::before { content: ''; position: absolute; inset: 5% 5% 4%; border: 1px solid rgba(255, 255, 255, 0.55); }
+.case__glass::after { content: ''; position: absolute; top: 0; bottom: 0; left: 7%; width: 10%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent); }
+.case__cap { position: absolute; left: 0; right: 0; top: 0; height: 11%; display: flex; justify-content: space-between; align-items: center; padding: 0 7%; border-bottom: 1.5px solid rgba(255, 255, 255, 0.8); background: rgba(255, 255, 255, 0.18); color: #2b2d31; }
+.case__cap b { font-weight: 700; }
+.case__base { position: absolute; left: 15%; right: 15%; bottom: 6%; height: 9%; z-index: 4; display: flex; justify-content: space-between; align-items: center; padding: 0 5%; background: linear-gradient(#55585e, #2f3135); color: #e9e9ec; border-radius: 2px; box-shadow: 0 18px 30px -12px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.25); }
+.case__wire { position: absolute; left: 50%; top: 0; height: 24%; width: 1.5px; margin-left: -0.75px; background: linear-gradient(#2b2d31, #6d7076); z-index: 2; }
+.case__hook { position: absolute; left: 50%; top: 21%; width: 22%; margin-left: -11%; z-index: 2; color: #4a4d53; }
 .pdp__stage img { position: absolute; inset: 7% 8%; width: 84%; height: 86%; object-fit: contain; filter: drop-shadow(0 34px 26px rgba(0, 0, 0, 0.32)); will-change: transform; }
-.pdp__tag { position: absolute; top: 14px; left: 30px; z-index: 2; opacity: 0.6; }
+.pdp__tag { position: absolute; top: 14px; left: 30px; z-index: 5; opacity: 0.6; }
+/* the piece sits inside the glass, under the hook */
+.pdp__stage [data-main] { inset: 27% 22% 18%; width: 56%; height: 55%; z-index: 1; }
 .pdp__tag--r { left: auto; right: 30px; }
 .pdp__thumbs { display: flex; gap: 8px; }
 .pdp__thumbs button { width: 74px; height: 74px; background: var(--paper-2); border: 1px solid transparent; padding: 6px; transition: border-color 0.3s; }

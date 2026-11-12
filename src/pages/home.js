@@ -436,13 +436,13 @@ export default {
     const exTimer = setInterval(nextExhibit, 4000);
     cleanups.push(() => clearInterval(exTimer));
 
-    /* statement section: soft red light drifting over black, following the pointer */
+    /* statement section: wavy contour bands that slowly morph and bend around the pointer */
     const maniSec = root.querySelector('[data-mani-sec]');
     let stopGlow = () => {};
     const glowIo = new IntersectionObserver(([e]) => {
       if (!e.isIntersecting) return;
       glowIo.disconnect();
-      stopGlow = flow(maniSec.querySelector('.mani__flow'), maniSec, { mode: 'glow', colors: ['#020307', '#071a44', '#1c4fd6', '#3f7dff', '#b4cbff'] });
+      stopGlow = flow(maniSec.querySelector('.mani__flow'), maniSec, { mode: 'contour', colors: ['#0a0a0b', '#7a0a10', '#c8121c', '#ff2e3a', '#f2f0ea'] });
     }, { rootMargin: '60% 0px' });
     glowIo.observe(maniSec);
     cleanups.push(() => { glowIo.disconnect(); stopGlow(); });
