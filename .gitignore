@@ -7,3 +7,5 @@ dist
 # source artwork (web-sized copies live in public/); run `npm run images` after adding them back
 raw/
 influencers/
+
+.vercel
