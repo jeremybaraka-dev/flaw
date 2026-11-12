@@ -442,7 +442,7 @@ export default {
     const glowIo = new IntersectionObserver(([e]) => {
       if (!e.isIntersecting) return;
       glowIo.disconnect();
-      stopGlow = flow(maniSec.querySelector('.mani__flow'), maniSec, { mode: 'glow', colors: ['#050101', '#3e0307', '#a80f18', '#f0202c', '#ff8a90'] });
+      stopGlow = flow(maniSec.querySelector('.mani__flow'), maniSec, { mode: 'glow', colors: ['#020307', '#071a44', '#1c4fd6', '#3f7dff', '#b4cbff'] });
     }, { rootMargin: '60% 0px' });
     glowIo.observe(maniSec);
     cleanups.push(() => { glowIo.disconnect(); stopGlow(); });
@@ -527,7 +527,7 @@ export default {
       const pts = cards.map((c) => [c.offsetLeft + c.offsetWidth / 2, c.offsetTop + 13]);
       pts.forEach(([x, y], i) => { pins[i].style.transform = `translate(${x}px, ${y}px)`; });
       string.setAttribute('width', track.scrollWidth);
-      string.setAttribute('height', track.scrollHeight);
+      string.setAttribute('height', track.clientHeight);
       // each stretch of string sags a little between its two pins
       const d = pts.map(([x, y], i) => {
         if (!i) return `M${x} ${y}`;
