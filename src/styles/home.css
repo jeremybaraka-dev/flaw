@@ -242,14 +242,12 @@
   transition: opacity 0.45s, transform 0.75s var(--ease);
 }
 .exh__b { opacity: 0; transform: scale(0.92) rotate(4deg); }
-/* grey duct tape: short strips stuck over the garment's edge onto the card */
-.exh__tapes { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
-.exh__tape {
-  position: absolute; height: 16px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.08)), #9a9ca1;
-  opacity: 0.9;
-  box-shadow: 0 1px 2px rgba(10, 10, 11, 0.25);
-  clip-path: polygon(0 4%, 3% 0, 6% 9%, 9% 0, 91% 3%, 95% 0, 97% 10%, 100% 4%, 99% 50%, 100% 96%, 96% 100%, 93% 90%, 89% 100%, 8% 97%, 5% 88%, 2% 100%, 0 94%, 2% 50%);
+/* soft spotlight behind the piece, and a yellow evidence marker in the corner */
+.exh__spot { position: absolute; inset: 4% 6% 0; z-index: 0; border-radius: 50%; background: radial-gradient(closest-side, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0)); pointer-events: none; transition: transform 0.7s var(--ease); }
+.exh__mark { position: absolute; left: 4px; bottom: 4px; z-index: 2; display: grid; place-items: center; width: 36px; height: 32px; padding-top: 5px; background: var(--tag); color: var(--ink); clip-path: polygon(22% 0, 78% 0, 100% 100%, 0 100%); font-family: 'Saira Stencil One', var(--f-display); font-weight: 400; font-size: 18px; line-height: 1; pointer-events: none; transition: transform 0.5s var(--ease); }
+@media (hover: hover) {
+  .exh:hover .exh__spot { transform: scale(1.08); }
+  .exh:hover .exh__mark { transform: translateY(-4px) rotate(-6deg); }
 }
 .exh__img img { z-index: 0; }
 @media (hover: hover) {
