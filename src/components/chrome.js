@@ -158,6 +158,7 @@ export function initChrome() {
           <rect width="1440" height="240" fill="#0a0a0b" />
         </g>
       </svg>
+      <svg class="ftr__flames-m" viewBox="0 0 390 200" preserveAspectRatio="none"><path d="M0 200 L0 196 C-41 114 -18 114 -5 69 C2 49 13 46 18 46 C29 46 38 58 40 76 C47 121 118 136 110 196 C87 96 137 96 148 41 C153 18 161 14 164 14 C173 14 179 29 181 50 C186 105 206 123 200 196 C187 131 203 131 212 96 C217 80 224 78 227 78 C235 78 241 87 243 102 C247 137 296 149 290 196 C269 101 337 101 350 50 C357 27 368 24 372 24 C384 24 393 38 395 58 C402 110 428 127 420 196 L390 196 L390 200 Z" /></svg>
     </div>
     <div class="ftr__badge" aria-hidden="true">
       <i class="ftr__strap"></i><i class="ftr__clip"></i>
@@ -198,7 +199,7 @@ export function initChrome() {
     </div>`;
   ftr.querySelector('[data-top]').addEventListener('click', () => lenis.scrollTo(0, { duration: reduced ? 0 : 1.6 }));
   // red light drifting behind the footer and through the flames, bending around the pointer
-  flow(ftr.querySelector('.ftr__glow'), ftr, { mode: 'glow', colors: ['#2a0204', '#6e0910', '#b8141b', '#e8222c', '#ff7a80'], visible: () => !document.body.classList.contains('has-reveal') || parseFloat(ftr.style.getPropertyValue('--rv')) > 0.01 });
+  if (matchMedia('(min-width: 861px)').matches) flow(ftr.querySelector('.ftr__glow'), ftr, { mode: 'glow', colors: ['#2a0204', '#6e0910', '#b8141b', '#e8222c', '#ff7a80'], visible: () => !document.body.classList.contains('has-reveal') || parseFloat(ftr.style.getPropertyValue('--rv')) > 0.01 });
   // footer parts rise in, one after another, the first time it comes into view (re-armed when it leaves)
   const ftrIo = new IntersectionObserver(([e]) => ftr.classList.toggle('is-in', e.isIntersecting && e.intersectionRatio > 0.15), { threshold: [0, 0.15, 0.4] });
   ftrIo.observe(ftr);

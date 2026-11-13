@@ -748,3 +748,23 @@ img[data-fade].is-loaded { animation: imgIn 0.7s var(--ease) backwards; }
   .ftr.is-in .ftr__socials > :nth-child(2) { transition-delay: 0.36s; } .ftr.is-in .ftr__socials > :nth-child(3) { transition-delay: 0.44s; }
   .ftr__socials > * { transform: translateY(26px) scale(0.6); }
 }
+
+/* phones: flat red, black type, big curling flames (Breaver style) */
+.ftr__flames-m { display: none; }
+@media (max-width: 860px) {
+  .ftr { background: var(--red); color: var(--ink); }
+  .ftr__glow, .ftr__sky { display: none; }
+  .ftr__fire { height: clamp(150px, 46vw, 210px); background: var(--ink); }
+  .ftr__flames-m { display: block; position: absolute; left: 0; right: 0; bottom: -1px; width: 100%; height: 100%; }
+  .ftr__flames-m path { fill: var(--red); }
+  .ftr__body { text-shadow: none; padding-top: 26px; }
+  .ftr h4 { color: var(--ink); }
+  .ftr__pill { background: var(--ink); color: var(--red-hot); }
+  .ftr__pill--ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 2.5px var(--ink); }
+  .ftr__socials a { background: var(--ink); color: var(--red-hot); }
+  .ftr__pay span { border-color: var(--ink); }
+  .ftr__giant b { color: var(--ink); }
+  .ftr__giant b.is-hollow { -webkit-text-stroke-color: var(--ink); }
+  .ftr__bar { border-top-color: rgba(10, 10, 11, 0.3); }
+}
+@media (max-width: 860px) { .ftr__bar > span { font-size: 9px; } .ftr__bar { flex-direction: column; gap: 10px; } }
