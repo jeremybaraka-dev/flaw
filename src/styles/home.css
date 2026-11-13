@@ -722,7 +722,7 @@
   .soc__kick { flex-direction: column; gap: 4px; }
   .soc__text { font-size: 11vw; }
   /* phones: three columns in view, the outer two cut by the screen edge */
-  .soc__wall { grid-template-columns: repeat(5, 46vw); width: calc(5 * 46vw + 4 * 12px); margin-left: calc(50% - (5 * 46vw + 4 * 12px) / 2); height: 980px; }
+  .soc__wall { grid-template-columns: repeat(5, 46vw); gap: 12px; padding: 0; width: calc(5 * 46vw + 4 * 12px); margin-left: calc(50% - (5 * 46vw + 4 * 12px) / 2); height: 980px; }
   .soc__col:nth-child(1), .soc__col:nth-child(5) { opacity: 0.9; }
   .ph { border-radius: 26px; padding: 5px; }
   .ph__screen { border-radius: 22px; }

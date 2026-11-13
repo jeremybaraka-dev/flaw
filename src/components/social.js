@@ -46,15 +46,22 @@ const stat = (s) => `<div class="sc"><b class="sc__big">${esc(s.big)}</b><span c
 
 /** Five columns; each alternates phone and stat card, offset so the wall looks staggered. */
 export function socialWall() {
+  // the brand video always takes the first phone slot of the centre column (it holds still while the rest drift)
+  const hero = posts.find((x) => x.video) || posts[0];
+  const rest = posts.filter((x) => x !== hero);
   const cols = [[], [], [], [], []];
   let p = 0;
   let s = 0;
+  let id = 0;
   cols.forEach((col, c) => {
     const startWithStat = c % 2 === 0;
+    let heroPlaced = false;
     // columns that start with a stat card get a fourth item, so every column runs the full height
     for (let k = 0; k < (startWithStat ? 4 : 3); k++) {
       const wantStat = (k % 2 === 0) === startWithStat;
-      col.push(wantStat ? stat(stats[s++ % stats.length]) : phone(posts[p % posts.length], p++));
+      if (wantStat) col.push(stat(stats[s++ % stats.length]));
+      else if (c === 2 && !heroPlaced) { heroPlaced = true; col.push(phone(hero, id++)); }
+      else col.push(phone(rest[p++ % rest.length], id++));
     }
   });
   return `<div class="soc__wall" data-soc>${cols.map((col, c) => `<div class="soc__col" data-col="${c}">${col.join('')}</div>`).join('')}</div>`;
