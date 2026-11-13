@@ -6,7 +6,7 @@ export const posts = [
   { img: '/lineup/11', user: 'flawenforcement', caption: 'No passengers. Racer Jacket out now 🏁 #flawenforcement', likes: 50200, comments: 1840, shares: 3100, sound: 'original sound · FE' },
   { img: '/lineup/9', user: 'flawenforcement', caption: 'The whole crew got booked 🚨 #scarsbuiltthis', likes: 31400, comments: 920, shares: 1200, sound: 'Scars Built This · FE' },
   { img: '/lineup/1', user: 'flawenforcement', caption: 'Still flawless. Void Raglan.', likes: 18700, comments: 402, shares: 655, sound: 'original sound · FE' },
-  { img: '/lineup/3', video: '/media/fe-post.mp4', poster: '/media/fe-post.jpg', user: 'flawenforcement', caption: 'We started with an idea. Now people are saying the name. #flawenforcement', likes: 50200, comments: 1840, shares: 3100, sound: 'original sound · FE' },
+  { img: '/lineup/3', video: '/media/fe-post.mp4', videoSm: '/media/fe-post-sm.mp4', poster: '/media/fe-post.jpg', posterSm: '/media/fe-post-sm.jpg', user: 'flawenforcement', caption: 'We started with an idea. Now people are saying the name. #flawenforcement', likes: 50200, comments: 1840, shares: 3100, sound: 'original sound · FE' },
   { img: '/lineup/10', user: 'flawenforcement', caption: 'Lights, camera, flaws. Jersey drop.', likes: 12300, comments: 288, shares: 430, sound: 'original sound · FE' },
   { img: '/lineup/2', user: 'flawenforcement', caption: 'Caught walking in Irezumi 🐉', likes: 27600, comments: 774, shares: 1090, sound: 'Scars Built This · FE' },
   { img: '/lineup/5', user: 'flawenforcement', caption: 'No faces, no case. Tribal Zip-Up.', likes: 15800, comments: 351, shares: 520, sound: 'original sound · FE' },

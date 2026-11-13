@@ -12,9 +12,12 @@ const ICON = {
   share: '<svg viewBox="0 0 24 24"><path d="M14 4v4C7 9 4 13 3 19c2.5-3.5 6-5 11-5v4l7-7-7-7z"/></svg>',
 };
 
+// phones and slow connections get the small video
+const SMALL = typeof window !== 'undefined' && (innerWidth <= 860 || !!navigator.connection?.saveData);
+
 function phone(p, i) {
   const media = p.video
-    ? `<video muted loop playsinline preload="none" poster="${p.poster || srcOf(p.img, 480)}" data-src="${p.video}"></video>`
+    ? `<video muted loop playsinline preload="none" poster="${(SMALL && p.posterSm) || p.poster || srcOf(p.img, 480)}" data-src="${(SMALL && p.videoSm) || p.video}"></video>`
     : `<img src="${srcOf(p.img, 480)}" alt="" loading="lazy" decoding="async" />`;
   return `
     <div class="ph" data-post="${i}" style="--d:${(i % 4) * -2.3}s;--t:${8 + (i % 3) * 2}s">
@@ -100,7 +103,7 @@ export function mountSocial(root) {
   if (vids.length) {
     const io = new IntersectionObserver((es) => es.forEach(({ target: v, isIntersecting }) => {
       if (isIntersecting) { if (!v.src) v.src = v.dataset.src; v.play().catch(() => {}); } else v.pause();
-    }), { rootMargin: '100px' });
+    }), { rootMargin: '120% 0px' });
     vids.forEach((v) => io.observe(v));
     cleanups.push(() => { io.disconnect(); vids.forEach((v) => v.pause()); });
   }

@@ -264,7 +264,7 @@ export default {
     </section>
 
     <section class="stmt t-ink rnd" data-stmt aria-label="Flaws aren't mistakes. They're the design.">
-      <div class="aura" aria-hidden="true"></div>
+      <div class="stmt__lights" aria-hidden="true"><i class="stmt__beam stmt__beam--r"></i><i class="stmt__beam stmt__beam--b"></i><i class="stmt__glow stmt__glow--r"></i><i class="stmt__glow stmt__glow--b"></i></div>
       <div class="stmt__kick mono"><span>File 002 / Correction notice</span><span>Filed ${filed}</span></div>
       <div class="stmt__desk">
         <article class="doc" aria-hidden="true">

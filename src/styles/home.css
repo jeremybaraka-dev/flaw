@@ -751,3 +751,17 @@
 @keyframes phFloat { 0% { opacity: 0; transform: translateY(0) scale(0.6); } 15% { opacity: 1; } 100% { opacity: 0; transform: translateY(-110px) translateX(-10px) scale(1.1) rotate(-12deg); } }
 .ph:nth-child(even) .ph__floats { display: none; }
 .no-motion .ph__screen > img, .no-motion .ph__prog::after, .no-motion .ph__floats svg { animation: none; }
+
+/* correction notice: a dark desk lit by a patrol car's red and blue lights */
+.stmt { isolation: isolate; background-color: #0b0b0d; background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1.4px); background-size: 7px 7px; }
+.stmt > .aura { display: none; }
+.stmt__lights { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+.stmt__glow { position: absolute; width: 70%; height: 80%; border-radius: 50%; filter: blur(90px); animation: stmtSiren 2.4s ease-in-out infinite; }
+.stmt__glow--r { left: -20%; top: -20%; background: rgba(227, 34, 43, 0.55); }
+.stmt__glow--b { right: -20%; bottom: -25%; background: rgba(40, 92, 255, 0.45); animation-delay: -1.2s; }
+@keyframes stmtSiren { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
+.stmt__beam { position: absolute; top: -30%; width: 60%; height: 160%; opacity: 0.5; mix-blend-mode: screen; transform-origin: 50% 0; }
+.stmt__beam--r { left: 0; background: conic-gradient(from 170deg at 50% 0, transparent 0deg, rgba(255, 40, 55, 0.35) 10deg, transparent 22deg); animation: stmtSweep 9s ease-in-out infinite alternate; }
+.stmt__beam--b { right: 0; background: conic-gradient(from 170deg at 50% 0, transparent 0deg, rgba(60, 110, 255, 0.3) 10deg, transparent 22deg); animation: stmtSweep 11s ease-in-out -4s infinite alternate-reverse; }
+@keyframes stmtSweep { from { transform: rotate(-28deg); } to { transform: rotate(28deg); } }
+.no-motion .stmt__glow, .no-motion .stmt__beam { animation: none; }
