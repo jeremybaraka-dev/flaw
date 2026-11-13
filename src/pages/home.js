@@ -123,6 +123,13 @@ const EXHIBITS = [
   [7, 'exhibit H. repeat offenders.'],
 ];
 
+// more case files filed under the correction notice
+const CASES = [
+  { form: 'Form FE-12', kind: 'Incident report', subject: 'The scar', note: 'Kept it. Wears it on the left sleeve now.', stamp: 'Filed' },
+  { form: 'Form FE-19', kind: 'Setback log', subject: 'The fall', note: 'Got back up. Took the loss as material.', stamp: 'Logged' },
+  { form: 'Form FE-33', kind: 'Witness statement', subject: 'The wrong turn', note: 'Saw them wear it anyway. Looked better for it.', stamp: 'Signed' },
+];
+
 /** Each character in its own span so it can be typed out. */
 const typed = (str) => str.split('').map((c) => `<span class="ch">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
 
@@ -290,6 +297,15 @@ export default {
           <figcaption class="mk">${EXHIBITS[0][1]}</figcaption>
         </figure>
       </div>
+      <div class="files" data-files>
+        ${CASES.map((c) => `
+          <article class="file">
+            <header class="file__head mono"><b>${c.form}</b><span>${c.kind}</span></header>
+            <dl class="file__dl mono"><div><dt>Subject</dt><dd>${c.subject}</dd></div></dl>
+            <p class="file__note mk">${c.note}</p>
+            <span class="file__stamp stamp">${c.stamp}</span>
+          </article>`).join('')}
+      </div>
       <p class="stmt__plain d" data-reveal>Flaws aren't mistakes. <span class="red">They're the design.</span></p>
     </section>
 
@@ -397,6 +413,12 @@ export default {
       gsap.fromTo(doc, { rotation: 1.6 }, { rotation: -1.4, ease: 'none', scrollTrigger: { trigger: stmt, start: 'top bottom', end: 'bottom top', scrub: true } });
     }
 
+    /* the extra case files land on the desk one after another */
+    if (!reduced) {
+      gsap.from(stmt.querySelectorAll('.file'), { y: 120, rotation: (i) => [-14, 9, -6][i], opacity: 0, duration: 0.9, ease: 'power4.out', stagger: 0.15, scrollTrigger: { trigger: stmt.querySelector('[data-files]'), start: 'top 85%', once: true } });
+      gsap.from(stmt.querySelectorAll('.file__stamp'), { scale: 2.6, opacity: 0, duration: 0.3, ease: 'power4.in', stagger: 0.15, delay: 0.75, scrollTrigger: { trigger: stmt.querySelector('[data-files]'), start: 'top 85%', once: true } });
+    }
+
     /* the polaroid swaps to a new suspect every 4 seconds, with a camera flash */
     const pola = stmt.querySelector('[data-pola]');
     const polaImg = pola.querySelector('img');
@@ -427,7 +449,7 @@ export default {
     /* statement: words light up as you read, then the social wall drifts and reacts */
     const maniWords = root.querySelectorAll('[data-mani] span');
     if (!reduced) {
-      gsap.fromTo(maniWords, { opacity: 0.15 }, { opacity: 1, ease: 'none', stagger: 0.5, scrollTrigger: { trigger: root.querySelector('[data-mani]'), start: 'top 85%', end: 'bottom 50%', scrub: true } });
+      gsap.fromTo(maniWords, { opacity: 0.12, yPercent: 30 }, { opacity: 1, yPercent: 0, ease: 'none', stagger: 0.5, scrollTrigger: { trigger: root.querySelector('[data-mani]'), start: 'top 85%', end: 'bottom 62%', scrub: 0.5 } });
     }
     cleanups.push(mountSocial(root));
 
@@ -514,6 +536,7 @@ export default {
           start: 'top top',
           end: () => `+=${dist()}`,
           pin: true,
+          refreshPriority: 1,
           scrub: 0.6,
           invalidateOnRefresh: true,
           onUpdate: (s) => { setProg(s.progress); sway = s.getVelocity(); },

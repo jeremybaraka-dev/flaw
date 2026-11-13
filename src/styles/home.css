@@ -765,3 +765,22 @@
 .stmt__beam--b { right: 0; background: conic-gradient(from 170deg at 50% 0, transparent 0deg, rgba(60, 110, 255, 0.3) 10deg, transparent 22deg); animation: stmtSweep 11s ease-in-out -4s infinite alternate-reverse; }
 @keyframes stmtSweep { from { transform: rotate(-28deg); } to { transform: rotate(28deg); } }
 .no-motion .stmt__glow, .no-motion .stmt__beam { animation: none; }
+
+/* extra case files under the correction notice */
+.files { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 2.4vw, 40px); max-width: 1200px; margin: clamp(50px, 6vw, 90px) auto 0; }
+.file { position: relative; padding: 22px 22px 56px; background: #f3f1ea; color: var(--ink); background-image: repeating-linear-gradient(to bottom, transparent 0 27px, rgba(70, 110, 170, 0.18) 27px 28px); box-shadow: 0 24px 40px -18px rgba(0, 0, 0, 0.7); }
+.file:nth-child(1) { transform: rotate(-2.4deg); }
+.file:nth-child(2) { transform: rotate(1.6deg) translateY(18px); }
+.file:nth-child(3) { transform: rotate(-1deg); }
+.file::before { content: ''; position: absolute; top: -9px; left: 50%; width: 70px; height: 20px; margin-left: -35px; background: rgba(244, 194, 13, 0.85); transform: rotate(-3deg); }
+.file__head { display: flex; justify-content: space-between; gap: 10px; padding-bottom: 10px; border-bottom: 1.5px solid var(--ink); }
+.file__head span { opacity: 0.6; }
+.file__dl { margin: 14px 0 6px; }
+.file__dl dt { opacity: 0.55; font-size: 10px; }
+.file__dl dd { margin: 2px 0 0; font-weight: 700; }
+.file__note { font-size: clamp(20px, 1.8vw, 26px); line-height: 1.1; color: #1b2a8a; margin-top: 8px; }
+.file__stamp { position: absolute; right: 16px; bottom: 14px; font-size: 18px; transform: rotate(-12deg); opacity: 0.85; }
+@media (max-width: 860px) {
+  .files { grid-template-columns: 1fr; gap: 26px; padding: 0 6px; }
+  .file:nth-child(2) { transform: rotate(1.6deg); }
+}

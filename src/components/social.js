@@ -68,9 +68,9 @@ export function mountSocial(root) {
   if (!reduced) {
     // alternate columns travel in opposite directions: some phones rise while others sink
     const small = innerWidth <= 860;
-    const speeds = small ? [-60, 50, -80, 60, -50] : [-90, 70, -140, 90, -60];
+    const speeds = small ? [-70, 60, 0, 60, -70] : [-120, 100, 0, 100, -120];
     wall.querySelectorAll('.soc__col').forEach((col, i) => {
-      gsap.fromTo(col, { y: -speeds[i] }, { y: speeds[i], ease: 'none', scrollTrigger: { trigger: wall, start: 'top bottom', end: 'bottom top', scrub: 0.4 } });
+      gsap.fromTo(col, { y: -speeds[i] }, { y: speeds[i], ease: 'none', scrollTrigger: { trigger: wall, start: 'top bottom', end: 'bottom top', scrub: true } });
     });
   }
 
