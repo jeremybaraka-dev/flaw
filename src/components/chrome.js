@@ -221,6 +221,7 @@ export function initChrome() {
     </div>
     <div class="fm__band">
       <canvas class="fm__ht" aria-hidden="true"></canvas>
+      <span class="fm__lights" aria-hidden="true"><i></i><i></i></span>
       <img class="fm__logo" src="/brand/logo.webp" alt="Flaw Enforcement" width="700" height="252" loading="lazy" />
       <span class="fm__tag">『Refuse to be perfect.』</span>
     </div>`;
@@ -232,6 +233,13 @@ export function initChrome() {
   const tickFm = () => { const n = new Date(); fmClock.textContent = t12.format(n).replace(' ', ''); fmDate.textContent = day.format(n); };
   tickFm();
   setInterval(tickFm, 1000);
+  // police lights glowing from far off over the halftone; they lean toward the finger
+  const band = ftr.querySelector('.fm__band');
+  band.addEventListener('pointermove', (e) => {
+    const r = band.getBoundingClientRect();
+    band.style.setProperty('--lx', ((e.clientX - r.left) / r.width).toFixed(3));
+    band.style.setProperty('--ly', ((e.clientY - r.top) / r.height).toFixed(3));
+  }, { passive: true });
   if (matchMedia('(max-width: 860px)').matches) flow(ftr.querySelector('.fm__ht'), ftr.querySelector('.fm__band'), { mode: 'print', dot: 7, boost: 1.15, colors: ['#0a0a0b', '#0a0a0b', '#0a0a0b', '#0a0a0b', '#e9e7e1'] });
   // red light drifting behind the footer and through the flames, bending around the pointer
   if (matchMedia('(min-width: 861px)').matches) flow(ftr.querySelector('.ftr__glow'), ftr, { mode: 'glow', colors: ['#2a0204', '#6e0910', '#b8141b', '#e8222c', '#ff7a80'], visible: () => !document.body.classList.contains('has-reveal') || parseFloat(ftr.style.getPropertyValue('--rv')) > 0.01 });

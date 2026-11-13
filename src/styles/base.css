@@ -796,3 +796,19 @@ img[data-fade].is-loaded { animation: imgIn 0.7s var(--ease) backwards; }
   .fm__logo { width: 38%; max-width: 170px; height: auto; filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.3)); }
   .fm__tag { padding: 6px 10px; background: rgba(233, 231, 225, 0.92); font-size: clamp(16px, 4.8vw, 21px); font-weight: 600; color: var(--ink); }
 }
+
+@media (max-width: 860px) {
+  /* bigger logo and line */
+  .fm__logo { width: 46%; max-width: 220px; }
+  .fm__tag { font-size: clamp(18px, 5.6vw, 24px); padding: 8px 12px; }
+  /* police lights from far away: red and blue glow tinting the paper, flashing in turn, drifting toward the finger */
+  .fm__lights { position: absolute; inset: 0; z-index: 0; pointer-events: none; mix-blend-mode: multiply; }
+  .fm__lights i { position: absolute; width: 95%; aspect-ratio: 1; border-radius: 50%; filter: blur(46px); transition: transform 1.2s var(--ease); }
+  .fm__lights i:first-child { left: -30%; top: -10%; background: rgba(227, 34, 43, 0.75); animation: fmSiren 1.8s ease-in-out infinite, fmDriftA 9s ease-in-out infinite alternate; transform: translate(calc(var(--lx, 0.5) * 30%), calc(var(--ly, 0.5) * 20%)); }
+  .fm__lights i:last-child { right: -30%; bottom: -15%; background: rgba(36, 92, 255, 0.7); animation: fmSiren 1.8s ease-in-out -0.9s infinite, fmDriftB 11s ease-in-out infinite alternate; transform: translate(calc(var(--lx, 0.5) * -30%), calc(var(--ly, 0.5) * -20%)); }
+  @keyframes fmSiren { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
+  @keyframes fmDriftA { to { left: -10%; top: 30%; } }
+  @keyframes fmDriftB { to { right: -8%; bottom: 20%; } }
+  .fm__logo, .fm__tag { position: relative; z-index: 1; }
+  .no-motion .fm__lights i { animation: none; opacity: 0.6; }
+}
