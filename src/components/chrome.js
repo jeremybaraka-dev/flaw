@@ -196,8 +196,43 @@ export function initChrome() {
     <div class="ftr__bar mono">
       <span>All flaws reserved · Kenya, countrywide · EAT <span data-fclock>${nairobiTime()}</span></span>
       <button class="ftr__up" type="button" data-top>Back to the top <i aria-hidden="true">↑</i></button>
+    </div>
+    <div class="fm">
+      <div class="fm__k"><i></i>Navigation</div>
+      <nav class="fm__nav" aria-label="Footer, phone">
+        <a href="/shop">Shop all</a>
+        <a href="/#lineup">The lineup</a>
+        <a href="/about">About</a>
+        <a href="/support">Support</a>
+        <a href="/checkout">Checkout</a>
+      </nav>
+      <div class="fm__label mono">(Case details)</div>
+      <div class="fm__soc">
+        <a href="${config.instagram}" target="_blank" rel="noopener">Instagram ↗</a>
+        <a href="https://www.tiktok.com/@flawenforcement" target="_blank" rel="noopener">TikTok ↗</a>
+        <a href="${waLink('Hi FLAW ENFORCEMENT!')}" target="_blank" rel="noopener">WhatsApp ↗</a>
+      </div>
+      <span class="fm__badge"><b>M-PESA</b><span>PayPal · Visa · Mastercard</span></span>
+      <p class="fm__based">Started in Nairobi.<br />Worn across Kenya.</p>
+      <a class="fm__mail" href="${waLink('Hi, I would like to place an order from FLAW ENFORCEMENT.')}" target="_blank" rel="noopener">↳ Order on WhatsApp</a>
+      <p class="fm__time">Nairobi <span data-fm-clock></span><br /><span data-fm-date></span> (EAT +03)</p>
+      <p class="fm__meta"><button type="button" data-top>Back to top ↑</button><br />Limited pieces. No restocks.</p>
+      <p class="fm__copy">©${new Date().getFullYear()} FLAW ENFORCEMENT™</p>
+    </div>
+    <div class="fm__band">
+      <canvas class="fm__ht" aria-hidden="true"></canvas>
+      <img class="fm__logo" src="/brand/logo.webp" alt="Flaw Enforcement" width="700" height="252" loading="lazy" />
+      <span class="fm__tag">『Refuse to be perfect.』</span>
     </div>`;
-  ftr.querySelector('[data-top]').addEventListener('click', () => lenis.scrollTo(0, { duration: reduced ? 0 : 1.6 }));
+  ftr.querySelectorAll('[data-top]').forEach((b) => b.addEventListener('click', () => lenis.scrollTo(0, { duration: reduced ? 0 : 1.6 })));
+  const fmClock = ftr.querySelector('[data-fm-clock]');
+  const fmDate = ftr.querySelector('[data-fm-date]');
+  const t12 = new Intl.DateTimeFormat('en-US', { timeZone: 'Africa/Nairobi', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+  const day = new Intl.DateTimeFormat('en-US', { timeZone: 'Africa/Nairobi', weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
+  const tickFm = () => { const n = new Date(); fmClock.textContent = t12.format(n).replace(' ', ''); fmDate.textContent = day.format(n); };
+  tickFm();
+  setInterval(tickFm, 1000);
+  if (matchMedia('(max-width: 860px)').matches) flow(ftr.querySelector('.fm__ht'), ftr.querySelector('.fm__band'), { mode: 'print', dot: 7, boost: 1.15, colors: ['#0a0a0b', '#0a0a0b', '#0a0a0b', '#0a0a0b', '#e9e7e1'] });
   // red light drifting behind the footer and through the flames, bending around the pointer
   if (matchMedia('(min-width: 861px)').matches) flow(ftr.querySelector('.ftr__glow'), ftr, { mode: 'glow', colors: ['#2a0204', '#6e0910', '#b8141b', '#e8222c', '#ff7a80'], visible: () => !document.body.classList.contains('has-reveal') || parseFloat(ftr.style.getPropertyValue('--rv')) > 0.01 });
   // footer parts rise in, one after another, the first time it comes into view (re-armed when it leaves)

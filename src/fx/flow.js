@@ -25,6 +25,7 @@ uniform vec2 uSize;      // area size in CSS pixels
 uniform float uTime;
 uniform vec2 uMouse;     // 0..1
 uniform float uPush;
+uniform float uBoost;
 
 float hash(vec2 p) { p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
 float noise(vec2 p) {
@@ -68,7 +69,7 @@ void main() {
   float edge = smoothstep(0.0, 0.14, uv.y) * smoothstep(1.0, 0.86, uv.y);
   v *= mix(0.45, 1.0, edge);
 
-  gl_FragColor = vec4(clamp(v, 0.0, 1.0), 0.0, 0.0, 1.0);
+  gl_FragColor = vec4(clamp(v * uBoost, 0.0, 1.0), 0.0, 0.0, 1.0);
 }`;
 
 // pass 2: dots, sized by the light, over a faint glow
@@ -155,6 +156,23 @@ void main() {
   gl_FragColor = vec4(c, 1.0);
 }`;
 
+// pass 2, print mode: black dots on paper, bigger where the light is strong (like a newspaper photo)
+const PRINT = `${HEAD}
+uniform sampler2D uField;
+uniform vec2 uCells;
+uniform float uCell;
+uniform vec3 uC0;
+uniform vec3 uC4;
+void main() {
+  vec2 fc = gl_FragCoord.xy;
+  vec2 cell = floor(fc / uCell);
+  float v = texture2D(uField, (cell + 0.5) / uCells).r;
+  float d = length(fc - (cell + 0.5) * uCell);
+  float r = uCell * 0.5 * (0.06 + 0.9 * sqrt(v));
+  float a = clamp(r - d + 0.6, 0.0, 1.0);
+  gl_FragColor = vec4(mix(uC4, uC0, a), 1.0);
+}`;
+
 const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
 
 /**
@@ -163,7 +181,7 @@ const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
  * mode: 'dots' (halftone), 'glow' (smooth light with film grain) or 'contour' (flat nested bands). dot: spacing in CSS pixels.
  * Returns a function that stops it.
  */
-export function flow(canvas, host, { colors = ['#0a0a0b', '#5c060c', '#d8121d', '#ff3d47', '#ffc9cc'], dot = touch ? 7 : 9, mode = 'dots', visible = null } = {}) {
+export function flow(canvas, host, { colors = ['#0a0a0b', '#5c060c', '#d8121d', '#ff3d47', '#ffc9cc'], dot = touch ? 7 : 9, mode = 'dots', visible = null, boost = 1 } = {}) {
   if (mode === 'glow') dot = 10; // the light is blurry, so the field can be coarse
   if (mode === 'contour') dot = 5; // band edges need a finer field to stay smooth
   const gl = canvas.getContext('webgl', { antialias: false, alpha: false, depth: false, stencil: false, powerPreference: 'low-power' });
@@ -179,7 +197,7 @@ export function flow(canvas, host, { colors = ['#0a0a0b', '#5c060c', '#d8121d', 
     return gl.getProgramParameter(p, gl.LINK_STATUS) ? p : null;
   };
   const pField = program(FIELD);
-  const pDots = program(mode === 'glow' ? GLOW : mode === 'contour' ? CONTOUR : DOTS);
+  const pDots = program(mode === 'glow' ? GLOW : mode === 'contour' ? CONTOUR : mode === 'print' ? PRINT : DOTS);
   if (!pField || !pDots) { host.classList.add('no-flow'); return () => {}; }
 
   const buf = gl.createBuffer();
@@ -189,7 +207,7 @@ export function flow(canvas, host, { colors = ['#0a0a0b', '#5c060c', '#d8121d', 
   gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
 
   const U = (p, names) => Object.fromEntries(names.map((n) => [n, gl.getUniformLocation(p, n)]));
-  const uf = U(pField, ['uCells', 'uSize', 'uTime', 'uMouse', 'uPush']);
+  const uf = U(pField, ['uCells', 'uSize', 'uTime', 'uMouse', 'uPush', 'uBoost']);
   const ud = U(pDots, ['uField', 'uCells', 'uCell', 'uTime', 'uC0', 'uC1', 'uC2', 'uC3', 'uC4']);
   gl.useProgram(pDots);
   colors.forEach((c, i) => gl.uniform3fv(ud[`uC${i}`], hex(c)));
@@ -265,6 +283,7 @@ export function flow(canvas, host, { colors = ['#0a0a0b', '#5c060c', '#d8121d', 
     gl.uniform1f(uf.uTime, (now - t0) / 1000);
     gl.uniform2f(uf.uMouse, mouse.x, mouse.y);
     gl.uniform1f(uf.uPush, mouse.push);
+    gl.uniform1f(uf.uBoost, boost);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
 
     // pass 2: dots on screen
@@ -289,7 +308,8 @@ export function flow(canvas, host, { colors = ['#0a0a0b', '#5c060c', '#d8121d', 
     if (want && !running) { running = true; raf = requestAnimationFrame(loop); }
     if (!want && running) { running = false; cancelAnimationFrame(raf); }
   };
-  const ro = new ResizeObserver(() => { resize(); if (!running) draw(performance.now()); });
+  // redraw straight after a resize: resizing a canvas clears it, which would flash black
+  const ro = new ResizeObserver(() => { resize(); draw(performance.now()); });
   ro.observe(host);
   resize();
   const io = new IntersectionObserver(([e]) => { inView = e.isIntersecting; sync(); }, { rootMargin: '80px' });
