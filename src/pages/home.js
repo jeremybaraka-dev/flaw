@@ -7,6 +7,7 @@ import { products, byHandle } from '../data/products.js';
 import { lineup } from '../data/lineup.js';
 import { kes } from '../data/pricing.js';
 import { pic, srcOf, loadAhead } from '../img.js';
+import { socialWall, mountSocial } from '../components/social.js';
 import { nairobiTime } from '../components/chrome.js';
 
 // [handle, image file, height factor, hanger type]
@@ -244,35 +245,18 @@ export default {
       </div>
     </section>
 
-    <section class="mani t-blood rnd" data-mani-sec>
-      <canvas class="mani__flow" aria-hidden="true"></canvas>
-      <div class="mani__kick mono"><span>File 001 / Statement</span><span>Classification: public</span></div>
-      <p class="mani__text d" data-mani>${MANIFESTO.split(' ')
-        .map((w) => (w.startsWith('*') ? `<span class="is-red">${w.replaceAll('*', '')}</span>` : `<span>${w}</span>`))
-        .join(' ')}</p>
-
-      <div class="mani__grid">
-        <div class="cctv brk" data-cctv>
-          <video muted loop playsinline preload="none" poster="/media/hero-poster.webp" data-src-sm="/media/cctv.mp4" data-src-lg="/media/cctv.mp4"></video>
-          <div class="cctv__lines" aria-hidden="true"></div>
-          <div class="cctv__hud mono" aria-hidden="true">
-            <span><b class="cctv__rec">●</b> Rec · Cam 01</span>
-            <span data-cctv-time>${nairobiTime()}</span>
-            <span>Evidence room</span>
-            <span>Case 001: "Scars built this."</span>
-          </div>
-        </div>
-        <div class="mani__copy">
-          <p data-reveal>Started in Nairobi, worn across Kenya. Flaw Enforcement is more than a streetwear label. It is a movement rooted in authenticity, identity and real human experience.</p>
-          <p data-reveal>Every scar, mistake, setback and flaw tells a story. We don't hide those stories. We wear them.</p>
-          <ul class="mani__facts mono" data-reveal>
-            <li><b class="d">15</b>Exhibits on file</li>
-            <li><b class="d">00</b>Restocks, ever</li>
-            <li><b class="d">47</b>Counties, one movement</li>
-          </ul>
-          <a class="btn btn--ghost" href="/about" data-reveal>Read the full file <span>→</span></a>
+    <section class="soc t-ink rnd" data-mani-sec>
+      <div class="soc__head">
+        <div class="soc__kick mono"><span>File 001 / Statement</span><span>Classification: public</span></div>
+        <p class="mani__text soc__text d" data-mani>${MANIFESTO.split(' ')
+          .map((w) => (w.startsWith('*') ? `<span class="is-red">${w.replaceAll('*', '')}</span>` : `<span>${w}</span>`))
+          .join(' ')}</p>
+        <div class="soc__side">
+          <p data-reveal>Started in Nairobi, worn across Kenya. Every scar, mistake and setback tells a story, and the timeline is full of them.</p>
+          <a class="btn btn--red" href="https://www.instagram.com/flawenforcement/" target="_blank" rel="noopener" data-reveal>Follow @flawenforcement <span>↗</span></a>
         </div>
       </div>
+      ${socialWall()}
     </section>
 
     <section class="stmt t-ink rnd" data-stmt aria-label="Flaws aren't mistakes. They're the design.">
@@ -436,42 +420,12 @@ export default {
     const exTimer = setInterval(nextExhibit, 4000);
     cleanups.push(() => clearInterval(exTimer));
 
-    /* statement section: wavy contour bands that slowly morph and bend around the pointer */
-    const maniSec = root.querySelector('[data-mani-sec]');
-    let stopGlow = () => {};
-    const glowIo = new IntersectionObserver(([e]) => {
-      if (!e.isIntersecting) return;
-      glowIo.disconnect();
-      stopGlow = flow(maniSec.querySelector('.mani__flow'), maniSec, { mode: 'contour', colors: ['#e9eaec', '#d6d7db', '#bfc1c6', '#9fa2a9', '#7d8088'] });
-    }, { rootMargin: '60% 0px' });
-    glowIo.observe(maniSec);
-    cleanups.push(() => { glowIo.disconnect(); stopGlow(); });
-
-    /* manifesto: words light up as you read */
+    /* statement: words light up as you read, then the social wall drifts and reacts */
     const maniWords = root.querySelectorAll('[data-mani] span');
     if (!reduced) {
-      gsap.fromTo(maniWords, { opacity: 0.12 }, { opacity: 1, ease: 'none', stagger: 0.5, scrollTrigger: { trigger: root.querySelector('[data-mani]'), start: 'top 82%', end: 'bottom 45%', scrub: true } });
+      gsap.fromTo(maniWords, { opacity: 0.15 }, { opacity: 1, ease: 'none', stagger: 0.5, scrollTrigger: { trigger: root.querySelector('[data-mani]'), start: 'top 85%', end: 'bottom 50%', scrub: true } });
     }
-
-    /* cctv: lazy video + opening clip */
-    const cctv = root.querySelector('[data-cctv]');
-    const video = cctv.querySelector('video');
-    const io = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) {
-        // on Data Saver or a slow connection the poster stays up instead of streaming the clip
-        const net = navigator.connection;
-        if (net && (net.saveData || /(^|-)2g|3g/.test(net.effectiveType || ''))) return;
-        if (!video.src) video.src = innerWidth > 1100 && !touch ? video.dataset.srcLg : video.dataset.srcSm;
-        video.play().catch(() => {});
-      } else video.pause();
-    }, { rootMargin: '200px' });
-    io.observe(cctv);
-    const clock = setInterval(() => { const t = cctv.querySelector('[data-cctv-time]'); if (t) t.textContent = nairobiTime(); }, 1000);
-    cleanups.push(() => { io.disconnect(); clearInterval(clock); video.pause(); });
-    if (!reduced) {
-      gsap.fromTo(cctv, { clipPath: 'inset(14% 10% 14% 10%)' }, { clipPath: 'inset(0% 0% 0% 0%)', ease: 'none', scrollTrigger: { trigger: cctv, start: 'top 92%', end: 'top 35%', scrub: true } });
-      gsap.fromTo(video, { scale: 1.25 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: cctv, start: 'top bottom', end: 'bottom top', scrub: true } });
-    }
+    cleanups.push(mountSocial(root));
 
     /* evidence: pinned horizontal scroll on desktop, native swipe on touch */
     const evi = root.querySelector('[data-evi]');
