@@ -54,3 +54,14 @@ export function loadAhead(el, margin = '150% 0px') {
   io.observe(el);
   return () => io.disconnect();
 }
+
+/** Warm the browser cache for a product page: the main picture at the size it will be shown, plus the small copies. */
+const warmed = new Set();
+export function warmProduct(p, sizes) {
+  if (!p || warmed.has(p.handle)) return;
+  warmed.add(p.handle);
+  const box = document.createElement('div');
+  // a detached <picture> still downloads, and picks AVIF/WebP and the width exactly like the real page will
+  box.innerHTML = pic(p.variants[0].images[0], { sizes, lazy: false, fade: false });
+  p.variants[0].images.forEach((b) => { const im = new Image(); im.src = srcOf(b, 360); });
+}

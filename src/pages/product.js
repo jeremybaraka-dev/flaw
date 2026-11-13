@@ -9,6 +9,8 @@ import { config, waLink } from '../config.js';
 import missing from './missing.js';
 import { pic, setPic, srcOf } from '../img.js';
 
+export const MAIN_SIZES = '(max-width: 900px) 92vw, 50vw';
+
 const usd = (n) => `$${(n / config.paypal.kesPerUsd).toFixed(0)}`;
 
 /** Clone the product image and throw it into the bag icon in the header. */
@@ -58,7 +60,7 @@ export default {
             <div class="mug" aria-hidden="true">${MUG}</div>
             <span class="pdp__tag mono">Exh. ${p.exhibit}</span>
             <span class="pdp__tag pdp__tag--r mono" data-view>View 01</span>
-            ${pic(v0.images[0], { sizes: '(max-width: 900px) 92vw, 50vw', alt: esc(p.title), lazy: false, high: true, attrs: 'data-main' })}
+            ${pic(v0.images[0], { sizes: MAIN_SIZES, alt: esc(p.title), lazy: false, high: true, fade: false, attrs: `data-main style="background:url(${(window.__feShown && window.__feShown[p.handle]) || srcOf(v0.images[0], 360)}) center / contain no-repeat"` })}
           </div>
           <div class="pdp__thumbs" data-thumbs></div>
         </div>
@@ -135,10 +137,11 @@ export default {
       const src = p.variants[state.v].images[i];
       root.querySelector('[data-view]').textContent = `View 0${i + 1}`;
       thumbs.querySelectorAll('button').forEach((b, n) => b.classList.toggle('is-on', n === i));
-      if (!animate || reduced) { setPic(main, src); return; }
+      const swap = () => { main.style.backgroundImage = `url(${srcOf(src, 360)})`; setPic(main, src); };
+      if (!animate || reduced) { swap(); return; }
       gsap.timeline()
         .to(main, { opacity: 0, scale: 0.94, rotation: -3, duration: 0.2, ease: 'power2.in' })
-        .add(() => { setPic(main, src); })
+        .add(swap)
         .to(main, { opacity: 1, scale: 1, rotation: 0, duration: 0.55, ease: 'power3.out' });
     };
     const paintThumbs = () => {

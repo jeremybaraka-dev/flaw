@@ -14,8 +14,8 @@ export function cover(text = '') {
   gsap.set(slats, { transformOrigin: 'top', scaleY: 0 });
   return gsap
     .timeline()
-    .to(slats, { scaleY: 1, duration: 0.5, ease: 'power3.inOut', stagger: 0.035 })
-    .to(label, { opacity: 0.7, duration: 0.2 }, '-=0.2')
+    .to(slats, { scaleY: 1, duration: 0.38, ease: 'power3.inOut', stagger: 0.025 })
+    .to(label, { opacity: 0.7, duration: 0.15 }, '-=0.15')
     .then();
 }
 
@@ -32,6 +32,6 @@ export function reveal() {
   return gsap
     .timeline({ onComplete: () => {el.classList.remove('is-active'); } })
     .to(label, { opacity: 0, duration: 0.15 })
-    .to(slats, { scaleY: 0, duration: 0.7, ease: 'power4.inOut', stagger: { each: 0.04, from: 'end' } }, 0.05)
+    .to(slats, { scaleY: 0, duration: 0.6, ease: 'power4.inOut', stagger: { each: 0.035, from: 'end' } }, 0.05)
     .then();
 }

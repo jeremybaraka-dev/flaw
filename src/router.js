@@ -2,7 +2,9 @@
 import { gsap, ScrollTrigger, lenis, reveals } from './fx/scroll.js';
 import { cover, reveal } from './fx/shutter.js';
 import { bindScramble } from './fx/text.js';
-import { markLoaded } from './img.js';
+import { markLoaded, warmProduct } from './img.js';
+import { byHandle } from './data/products.js';
+import { MAIN_SIZES } from './pages/product.js';
 import { setActiveNav, syncFooterReveal } from './components/chrome.js';
 import { closeDrawer } from './components/drawer.js';
 
@@ -93,6 +95,19 @@ export async function go(href, { push = true } = {}) {
 
 export function startRouter() {
   history.scrollRestoration = 'manual';
+  // hovering or touching a product link starts its pictures downloading, so the page opens with them ready
+  const warm = (e) => {
+    const a = e.target.closest?.('a[href^="/product/"]');
+    if (!a) return;
+    const handle = a.getAttribute('href').split('/')[2];
+    // remember the exact picture this link is already showing: the product page uses it as its instant stand-in
+    const shown = a.querySelector('img')?.currentSrc;
+    if (shown) (window.__feShown ||= {})[handle] = shown;
+    warmProduct(byHandle[handle], MAIN_SIZES);
+  };
+  document.addEventListener('pointerover', warm, { passive: true });
+  document.addEventListener('touchstart', warm, { passive: true });
+  document.addEventListener('focusin', warm);
   document.addEventListener('click', (e) => {
     if (e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     const a = e.target.closest('a[href]');
