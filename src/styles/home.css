@@ -265,12 +265,9 @@
 .evi {
   position: relative;
   overflow: hidden;
-  /* mugshot wall: white with height lines */
-  background-color: var(--paper-2);
-  background-image:
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 30%, rgba(0, 0, 0, 0.06)),
-    repeating-linear-gradient(to bottom, transparent 0 62px, rgba(10, 10, 11, 0.5) 62px 64px),
-    repeating-linear-gradient(to bottom, transparent 0 31px, rgba(10, 10, 11, 0.16) 31px 32px);
+  /* clean white, with giant outlined type drifting behind the cards */
+  background: radial-gradient(90% 70% at 50% 40%, #ffffff 0%, #f3f3f5 60%, #e4e5e8 100%);
+  isolation: isolate;
 }
 .evi__prog { background: var(--paper-line); }
 /* small labels at full strength over the wall lines */
@@ -732,3 +729,25 @@
   .sc { border-radius: 18px; }
   .sc__big { font-size: 13vw; }
 }
+
+/* evidence: two rows of outlined type moving in opposite directions */
+.evi__type { position: absolute; inset: 0; z-index: -1; display: flex; flex-direction: column; justify-content: space-between; padding: 7vh 0 0; overflow: hidden; pointer-events: none; }
+.evi__row { display: flex; width: max-content; white-space: nowrap; font-family: var(--f-display); font-weight: 900; font-stretch: 125%; text-transform: uppercase; font-size: clamp(90px, 15vw, 260px); line-height: 0.9; letter-spacing: -0.03em; color: transparent; -webkit-text-stroke: 2px rgba(10, 10, 11, 0.16); animation: eviRow 60s linear infinite; }
+.evi__row span { padding-right: 0.4em; }
+.evi__row--b { -webkit-text-stroke-color: rgba(184, 20, 27, 0.26); animation-direction: reverse; animation-duration: 72s; }
+@keyframes eviRow { to { transform: translateX(-50%); } }
+.no-motion .evi__row { animation: none; }
+
+/* phones feel alive: a slow camera move on each post, a playback bar, hearts floating up */
+.ph__screen > img { animation: phKen var(--t, 9s) ease-in-out var(--d, 0s) infinite alternate; transform-origin: 50% 35%; }
+@keyframes phKen { from { transform: scale(1.04) translate(0, 0); } to { transform: scale(1.16) translate(-2%, 1.5%); } }
+.ph__prog { position: absolute; left: 0; right: 0; bottom: 48px; height: 2px; background: rgba(255, 255, 255, 0.25); }
+.ph__prog::after { content: ''; position: absolute; inset: 0; background: #fff; transform-origin: left; animation: phProg var(--t, 9s) linear var(--d, 0s) infinite; }
+@keyframes phProg { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.ph__floats { position: absolute; right: 14px; bottom: 150px; width: 24px; height: 120px; pointer-events: none; }
+.ph__floats svg { position: absolute; bottom: 0; left: 0; width: 16px; height: 16px; fill: #fe2c55; opacity: 0; animation: phFloat 3.2s ease-out infinite; }
+.ph__floats svg:nth-child(2) { fill: #fff; left: 8px; animation-delay: 1.1s; }
+.ph__floats svg:nth-child(3) { fill: #ff8fab; left: -4px; animation-delay: 2.2s; }
+@keyframes phFloat { 0% { opacity: 0; transform: translateY(0) scale(0.6); } 15% { opacity: 1; } 100% { opacity: 0; transform: translateY(-110px) translateX(-10px) scale(1.1) rotate(-12deg); } }
+.ph:nth-child(even) .ph__floats { display: none; }
+.no-motion .ph__screen > img, .no-motion .ph__prog::after, .no-motion .ph__floats svg { animation: none; }

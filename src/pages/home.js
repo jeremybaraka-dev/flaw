@@ -209,6 +209,10 @@ export default {
     </section>
 
     <section class="evi t-paper rnd" data-evi>
+      <div class="evi__type" aria-hidden="true">
+        <div class="evi__row">${'<span>Evidence</span><span>Do not perfect</span>'.repeat(4)}</div>
+        <div class="evi__row evi__row--b">${'<span>Exhibit 01—15</span><span>No restocks</span>'.repeat(4)}</div>
+      </div>
       <div class="evi__pin">
         <header class="evi__head">
           <div>

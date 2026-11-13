@@ -17,7 +17,7 @@ function phone(p, i) {
     ? `<video muted loop playsinline preload="none" poster="${srcOf(p.img, 480)}" data-src="${p.video}"></video>`
     : `<img src="${srcOf(p.img, 480)}" alt="" loading="lazy" decoding="async" />`;
   return `
-    <div class="ph" data-post="${i}">
+    <div class="ph" data-post="${i}" style="--d:${(i % 4) * -2.3}s;--t:${8 + (i % 3) * 2}s">
       <div class="ph__screen">
         ${media}
         <i class="ph__shade"></i>
@@ -33,6 +33,8 @@ function phone(p, i) {
         <div class="ph__cap"><b>@${esc(p.user)}</b><p>${esc(p.caption)}</p><span class="mono">♫ ${esc(p.sound)}</span></div>
         <div class="ph__nav"><span>⌂</span><span>⌕</span><span class="ph__plus">+</span><span>✉</span><span>◯</span></div>
         <i class="ph__burst" aria-hidden="true">${ICON.heart}</i>
+        <span class="ph__floats" aria-hidden="true">${ICON.heart}${ICON.heart}${ICON.heart}</span>
+        <i class="ph__prog" aria-hidden="true"></i>
       </div>
     </div>`;
 }
@@ -61,9 +63,11 @@ export function mountSocial(root) {
 
   // columns drift at different speeds as the section scrolls past
   if (!reduced) {
-    const speeds = [-90, 70, -140, 90, -60];
+    // alternate columns travel in opposite directions: some phones rise while others sink
+    const small = innerWidth <= 860;
+    const speeds = small ? [-130, 150, -170, 150, -130] : [-240, 220, -300, 240, -200];
     wall.querySelectorAll('.soc__col').forEach((col, i) => {
-      gsap.fromTo(col, { y: -speeds[i] }, { y: speeds[i], ease: 'none', scrollTrigger: { trigger: wall, start: 'top bottom', end: 'bottom top', scrub: true } });
+      gsap.fromTo(col, { y: -speeds[i] }, { y: speeds[i], ease: 'none', scrollTrigger: { trigger: wall, start: 'top bottom', end: 'bottom top', scrub: 0.4 } });
     });
   }
 
