@@ -526,9 +526,7 @@ body.has-reveal #app {
   box-shadow: 0 40px 80px rgba(0, 0, 0, 0.55);
 }
 body.has-reveal #footer { position: fixed; left: 0; right: 0; bottom: 0; z-index: 1; border-top: 0; }
-body.has-reveal .ftr__status,
-body.has-reveal .ftr__lead,
-body.has-reveal .ftr__top { transform: translate3d(0, calc((1 - var(--rv, 1)) * -70px), 0); opacity: calc(0.3 + var(--rv, 1) * 0.7); }
+body.has-reveal .ftr__body { transform: translate3d(0, calc((1 - var(--rv, 1)) * -60px), 0); opacity: calc(0.3 + var(--rv, 1) * 0.7); }
 
 /* ───────── aura: slow red and amber glow ───────── */
 .aura { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
@@ -550,101 +548,73 @@ body.has-reveal .ftr__top { transform: translate3d(0, calc((1 - var(--rv, 1)) * 
   100% { transform: translate(-3%, 9%) rotate(-20deg) scale(1.06); }
 }
 
-/* ───────── footer ───────── */
-.ftr { position: relative; background: var(--ink); color: var(--bone); border-top: 1px solid var(--line); overflow: hidden; isolation: isolate; }
-/* a patrol car parked somewhere off screen: slow red and blue wash, same lights as the intro */
-.ftr__lights { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
-.ftr__lights i { position: absolute; bottom: -45%; width: 60%; height: 90%; border-radius: 50%; filter: blur(70px); animation: ftrLight 3.2s ease-in-out infinite; }
-.ftr__lights i:first-child { left: -18%; background: rgba(227, 34, 43, 0.5); }
-.ftr__lights i:last-child { right: -18%; background: rgba(36, 84, 255, 0.34); animation-delay: -1.6s; }
-@keyframes ftrLight { 0%, 100% { opacity: 0.14; } 50% { opacity: 0.8; } }
-.no-motion .ftr__lights i { animation: none; opacity: 0.4; }
+/* ───────── footer: flames, a peeking badge, a hanging pass, a giant wordmark ───────── */
+.ftr { position: relative; background: var(--red); color: var(--ink); overflow: hidden; isolation: isolate; }
+.ftr__fire { position: relative; height: clamp(150px, 17vw, 260px); background: var(--ink); }
+.ftr__flames { position: absolute; left: 0; right: 0; bottom: -1px; width: 100%; height: 100%; z-index: 2; }
+.ftr__flames path { fill: var(--red); }
+.ftr__peek { position: absolute; left: 50%; bottom: 8%; z-index: 1; width: clamp(180px, 22vw, 340px); transform: translate(-50%, calc((1 - var(--rv, 1)) * 60%)); filter: drop-shadow(0 0 30px rgba(227, 34, 43, 0.45)); }
 
-.ftr__status { display: flex; justify-content: space-between; gap: 8px 24px; padding: 16px var(--gutter); border-bottom: 1px solid var(--line); }
-.ftr__status span { opacity: 0.7; }
-.ftr__status span:first-child { opacity: 1; }
-.ftr__dot { display: inline-block; width: 8px; height: 8px; margin-right: 10px; border-radius: 50%; background: var(--red-hot); box-shadow: 0 0 0 0 rgba(227, 34, 43, 0.7); animation: ftrDot 1.8s ease-out infinite; }
-@keyframes ftrDot { to { box-shadow: 0 0 0 10px rgba(227, 34, 43, 0); } }
-
-.ftr__lead { display: flex; justify-content: space-between; align-items: flex-end; gap: 28px var(--gutter); flex-wrap: wrap; padding: clamp(36px, 4.4vw, 68px) var(--gutter) clamp(28px, 3vw, 46px); }
-.ftr__creed { font-size: clamp(30px, 4.5vw, 84px); }
-.ftr__creed span { display: block; }
-.ftr__cta { display: flex; flex-direction: column; gap: 10px; min-width: 250px; }
-
-.ftr__top { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px var(--gutter); padding: clamp(24px, 2.6vw, 40px) var(--gutter) clamp(30px, 3.4vw, 52px); border-top: 1px solid var(--line); }
-.ftr h4 { font-family: var(--f-mono); font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.5; margin-bottom: 14px; }
-.ftr li { margin-bottom: 6px; }
-.ftr__col li > span { font-weight: 600; font-size: 15px; opacity: 0.8; }
-/* links: a red arrow slides in and the word steps aside */
-.ftr__a { position: relative; display: inline-block; font-weight: 700; font-size: 17px; transition: transform 0.45s var(--ease), color 0.3s; }
-.ftr__a::before { content: '→'; position: absolute; left: -22px; top: 0; color: var(--red-hot); opacity: 0; transform: translateX(-8px); transition: opacity 0.3s, transform 0.45s var(--ease); }
-@media (hover: hover) {
-  .ftr__a:hover { transform: translateX(22px); }
-  .ftr__a:hover::before { opacity: 1; transform: none; }
-}
-.ftr__pay { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
-.ftr__fine { margin-top: 12px; opacity: 0.5; font-size: 10px; max-width: 24em; }
-.paymark {
-  display: inline-flex;
-  align-items: center;
-  height: 28px;
-  padding: 0 10px;
-  border: 1px solid var(--line);
-  font-family: var(--f-mono);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-}
+.ftr__body { position: relative; z-index: 3; display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 36px var(--gutter); padding: clamp(20px, 2.6vw, 40px) var(--gutter) clamp(20px, 3vw, 44px); }
+.ftr h4 { font-family: var(--f-display); font-weight: 900; font-stretch: 100%; font-size: clamp(22px, 1.9vw, 30px); text-transform: none; letter-spacing: -0.01em; margin-bottom: 12px; }
+.ftr__nav { display: grid; align-content: start; gap: 6px; }
+.ftr__a { position: relative; display: inline-block; justify-self: start; font-weight: 600; font-size: clamp(16px, 1.3vw, 20px); transition: transform 0.45s var(--ease); }
+.ftr__a::before { content: '→'; position: absolute; left: -22px; opacity: 0; transform: translateX(-8px); transition: opacity 0.3s, transform 0.45s var(--ease); }
+@media (hover: hover) { .ftr__a:hover { transform: translateX(22px); } .ftr__a:hover::before { opacity: 1; transform: none; } }
+.ftr__mid { display: grid; justify-items: center; align-content: start; gap: 12px; text-align: center; }
+.ftr__mid p { font-size: clamp(15px, 1.2vw, 19px); }
+.ftr__pill { display: inline-flex; align-items: center; justify-content: center; min-width: 230px; height: 54px; padding: 0 28px; border-radius: 99px; background: var(--ink); color: var(--red-hot); font-weight: 800; font-size: 16px; transition: transform 0.4s var(--ease), background 0.3s, color 0.3s; }
+.ftr__pill--ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 2px var(--ink); }
+@media (hover: hover) { .ftr__pill:hover { transform: translateY(-3px) rotate(-1.5deg); background: var(--bone); color: var(--ink); } }
+.ftr__side { display: grid; justify-items: end; align-content: start; gap: 14px; text-align: right; }
+.ftr__socials { display: flex; gap: 10px; }
+.ftr__socials a { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: var(--ink); color: var(--red-hot); transition: transform 0.4s var(--ease); }
+.ftr__socials svg { width: 22px; height: 22px; fill: currentColor; }
+@media (hover: hover) { .ftr__socials a:hover { transform: translateY(-4px) rotate(-8deg); } }
+.ftr__copy { font-family: var(--f-display); font-weight: 900; font-size: clamp(16px, 1.3vw, 20px); }
+.ftr__pay { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+.ftr__pay span { padding: 5px 9px; border: 1.5px solid var(--ink); border-radius: 6px; font-size: 10px; font-weight: 700; }
+.paymark { display: inline-flex; align-items: center; height: 28px; padding: 0 10px; border: 1px solid var(--line); font-family: var(--f-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; }
 .paymark--mpesa { color: var(--mpesa); border-color: currentColor; }
 
-/* the wordmark: F and ENFORCEMENT are solid, LAW is hollow. Letters rise one by one as the footer comes into view. */
-.ftr__giant {
-  display: flex;
-  justify-content: center;
-  gap: 0.24em;
-  width: 100%;
-  padding: 0.06em var(--gutter) 0;
-  font-size: 8.3vw;
-  font-stretch: 100%;
-  white-space: nowrap;
-  line-height: 0.8;
-  margin-bottom: -0.06em;
-  overflow: hidden;
-  user-select: none;
-}
+/* a visitor pass hanging from a strap, swinging gently (wide screens) */
+.ftr__badge { position: absolute; right: clamp(24px, 5vw, 90px); top: 0; z-index: 4; width: clamp(150px, 12vw, 200px); transform-origin: 50% 0; animation: ftrSwing 5s ease-in-out infinite; pointer-events: none; }
+.ftr__strap { display: block; width: 26px; height: clamp(150px, 14vw, 230px); margin: 0 auto; background: linear-gradient(90deg, #050506, #1d1d20 50%, #050506); }
+.ftr__clip { display: block; width: 16px; height: 22px; margin: -2px auto 0; border: 3px solid #2a2b2f; border-radius: 6px 6px 10px 10px; }
+.ftr__card { margin-top: -4px; padding: 10px; border-radius: 12px; background: #111114; color: var(--bone); box-shadow: 0 30px 40px -12px rgba(0, 0, 0, 0.55); }
+.ftr__card-top, .ftr__card-bot { display: flex; justify-content: space-between; font-size: 9px; padding: 2px 2px 8px; }
+.ftr__card-top b { color: var(--red-hot); font-family: var(--f-display); font-weight: 900; font-size: 18px; }
+.ftr__card-bot { padding: 8px 2px 2px; }
+.ftr__card img { width: 100%; aspect-ratio: 3 / 3.4; object-fit: cover; object-position: 50% 20%; border-radius: 6px; filter: grayscale(0.2) contrast(1.05); }
+@keyframes ftrSwing { 0%, 100% { transform: rotate(3deg); } 50% { transform: rotate(-3deg); } }
+.no-motion .ftr__badge { animation: none; }
+
+/* the wordmark: black on red, LAW hollow; letters rise one by one as the footer is revealed */
+.ftr__giant { position: relative; z-index: 3; display: flex; justify-content: center; gap: 0.24em; width: 100%; padding: 0.06em var(--gutter) 0; font-size: 8.3vw; font-stretch: 100%; white-space: nowrap; line-height: 0.8; margin-bottom: -0.04em; overflow: hidden; user-select: none; }
 .ftr__giant span { display: inline-block; }
-.ftr__giant b {
-  display: inline-block;
-  font-weight: inherit;
-  color: var(--red);
-  transform: translate3d(0, calc((1 - clamp(0, var(--rv, 1) * 2 - var(--i) * 0.07, 1)) * 108%), 0);
-  transition: color 0.4s, -webkit-text-stroke-color 0.4s;
-}
-.ftr__giant b.is-hollow { color: transparent; -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4); }
-@media (hover: hover) {
-  .ftr__giant:hover b.is-hollow { color: var(--bone); -webkit-text-stroke-color: var(--bone); }
-}
+.ftr__giant b { display: inline-block; font-weight: inherit; color: var(--ink); transform: translate3d(0, calc((1 - clamp(0, var(--rv, 1) * 2 - var(--i) * 0.07, 1)) * 108%), 0); transition: color 0.4s; }
+.ftr__giant b.is-hollow { color: transparent; -webkit-text-stroke: 2px var(--ink); }
+@media (hover: hover) { .ftr__giant:hover b.is-hollow { color: var(--bone); -webkit-text-stroke-color: var(--bone); } }
 .no-motion .ftr__giant b { transform: none; }
-
-.ftr__bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 24px; padding: 14px var(--gutter); border-top: 1px solid var(--line); }
-.ftr__bar > span { opacity: 0.6; }
+.ftr__bar { position: relative; z-index: 3; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 24px; padding: 14px var(--gutter); border-top: 1.5px solid rgba(10, 10, 11, 0.35); }
 .ftr__up { font-family: var(--f-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 10px; }
-.ftr__up i { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; border: 1px solid currentColor; font-style: normal; transition: background 0.3s, border-color 0.3s, transform 0.45s var(--ease); }
-@media (hover: hover) { .ftr__up:hover i { background: var(--red); border-color: var(--red); transform: translateY(-4px); } }
+.ftr__up i { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid currentColor; font-style: normal; transition: background 0.3s, color 0.3s, transform 0.45s var(--ease); }
+@media (hover: hover) { .ftr__up:hover i { background: var(--ink); color: var(--red-hot); transform: translateY(-4px); } }
 
+@media (min-width: 1001px) { .ftr__body { padding-right: calc(var(--gutter) + clamp(150px, 12vw, 200px) + clamp(40px, 6vw, 110px)); } }
+@media (max-width: 1000px) { .ftr__badge { display: none; } }
 @media (max-width: 860px) {
-  .ftr__status span:nth-child(2) { display: none; }
-  .ftr__lead { flex-direction: column; align-items: stretch; }
-  .ftr__creed { font-size: 10.6vw; }
-  .ftr__cta { min-width: 0; }
-  .ftr__top { grid-template-columns: 1fr 1fr; }
-  .ftr__col--wide { grid-column: 1 / -1; }
+  .ftr__body { grid-template-columns: 1fr; justify-items: center; text-align: center; gap: 34px; }
+  .ftr__nav { justify-items: center; }
+  .ftr__a { justify-self: center; }
+  .ftr__side { justify-items: center; text-align: center; }
+  .ftr__pay { justify-content: center; }
+  .ftr__pill { width: min(100%, 320px); }
   .ftr__giant { flex-direction: column; align-items: stretch; gap: 0; padding-top: 0.1em; }
   .ftr__giant span { display: flex; justify-content: space-between; overflow: hidden; padding-top: 0.06em; }
   .ftr__giant span:first-child { font-size: 29.4vw; }
   .ftr__giant span:last-child { font-size: 10.9vw; margin-top: 0.12em; }
-  .ftr__bar { justify-content: flex-start; }
-  .ftr__bar .ftr__up { margin-left: auto; }
+  .ftr__bar { justify-content: center; text-align: center; }
 }
 
 /* ───────── police tape marquee ───────── */

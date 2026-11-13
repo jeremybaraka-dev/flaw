@@ -145,60 +145,45 @@ export function initChrome() {
   const glyphs = (word, hollow = '') => `<span>${word.split('').map((c) => `<b style="--i:${gi++}"${hollow.includes(c) ? ' class="is-hollow"' : ''}>${c}</b>`).join('')}</span>`;
 
   ftr.innerHTML = `
-    <div class="ftr__lights" aria-hidden="true"><i></i><i></i></div>
-    <div class="ftr__status mono">
-      <span><b class="ftr__dot"></b>Case 001 · Still open</span>
-      <span>Dispatching across Kenya · all 47 counties</span>
-      <span>EAT <span data-fclock>${nairobiTime()}</span></span>
+    <div class="ftr__fire" aria-hidden="true">
+      <img class="ftr__peek" src="/brand/logo-lg.webp" alt="" width="700" height="252" loading="lazy" />
+      <svg class="ftr__flames" viewBox="0 0 1440 240" preserveAspectRatio="none"><path d="M0 240 L0 236 C6 183.5 45.6 153.5 74 86 C72 138.5 117.6 191 120 236 C127.5 164.25 177 123.25 213 31 C210 102.75 267 174.5 270 236 C276 194 315.6 170 344 116 C342 158 387.6 200 390 236 C398.5 157.25 454.6 112.25 495 11 C492 89.75 556.6 168.5 560 236 C565.5 187 601.8 159 628 96 C626 145 667.8 194 670 236 C681.5 202.75 757.4 183.75 813 141 C808 174.25 895.4 207.5 900 236 C905.5 187 941.8 159 968 96 C966 145 1007.8 194 1010 236 C1018.5 157.25 1074.6 112.25 1115 11 C1112 89.75 1176.6 168.5 1180 236 C1186 194 1225.6 170 1254 116 C1252 158 1297.6 200 1300 236 C1307 166 1353.2 126 1387 36 C1384 106 1437.2 176 1440 236 L1440 236 L1440 240 Z" /></svg>
     </div>
-    <div class="ftr__lead">
-      <p class="ftr__creed d"><span>We don't hide flaws.</span> <span class="red">We enforce them.</span></p>
-      <div class="ftr__cta">
-        <a class="btn btn--red" href="/shop">Open the locker <span>→</span></a>
-        <a class="btn btn--ghost" href="${waLink('Hi, I would like to place an order from FLAW ENFORCEMENT.')}" target="_blank" rel="noopener">Order on WhatsApp ↗</a>
+    <div class="ftr__badge" aria-hidden="true">
+      <i class="ftr__strap"></i><i class="ftr__clip"></i>
+      <div class="ftr__card">
+        <div class="ftr__card-top mono"><b>FE</b><span>Case 001 · Pass</span></div>
+        <img src="/lineup/11-480.webp" alt="" loading="lazy" />
+        <div class="ftr__card-bot mono"><span>Suspect №144</span><span>Kenya · 254</span></div>
       </div>
     </div>
-    <div class="ftr__top">
-      <div class="ftr__col">
-        <h4>Files</h4>
-        <ul>
-          <li><a class="ftr__a" href="/shop">Shop all</a></li>
-          <li><a class="ftr__a" href="/#lineup">The lineup</a></li>
-          <li><a class="ftr__a" href="/about">About</a></li>
-          <li><a class="ftr__a" href="/support">Support and FAQ</a></li>
-        </ul>
+    <div class="ftr__body">
+      <nav class="ftr__nav" aria-label="Footer">
+        <h4>Navigation</h4>
+        <a class="ftr__a" href="/shop">Shop all</a>
+        <a class="ftr__a" href="/#lineup">The lineup</a>
+        <a class="ftr__a" href="/about">About</a>
+        <a class="ftr__a" href="/support">Support and FAQ</a>
+      </nav>
+      <div class="ftr__mid">
+        <h4 class="ftr__say">Got flaws?</h4>
+        <p>Orders, sizes, collabs. Talk to us.</p>
+        <a class="ftr__pill" href="${waLink('Hi, I would like to place an order from FLAW ENFORCEMENT.')}" target="_blank" rel="noopener">Order on WhatsApp</a>
+        <a class="ftr__pill ftr__pill--ghost" href="/shop">Open the locker →</a>
       </div>
-      <div class="ftr__col">
-        <h4>Contact</h4>
-        <ul>
-          <li><a class="ftr__a" href="${config.instagram}" target="_blank" rel="noopener">Instagram ↗</a></li>
-          <li><a class="ftr__a" href="${waLink('Hi, I have a question about FLAW ENFORCEMENT.')}" target="_blank" rel="noopener">WhatsApp ↗</a></li>
-          <li><span>Kenya, countrywide</span></li>
-        </ul>
-      </div>
-      <div class="ftr__col">
-        <h4>The rules</h4>
-        <ul>
-          <li><span>Limited pieces</span></li>
-          <li><span>No restocks, ever</span></li>
-          <li><span>No two the same</span></li>
-        </ul>
-      </div>
-      <div class="ftr__col ftr__col--wide">
-        <h4>We accept</h4>
-        <div class="ftr__pay">
-          <span class="paymark paymark--mpesa">M-PESA</span>
-          <span class="paymark">PAYPAL</span>
-          <span class="paymark">VISA</span>
-          <span class="paymark">MASTERCARD</span>
+      <div class="ftr__side">
+        <div class="ftr__socials">
+          <a href="${config.instagram}" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="17.4" cy="6.6" r="1.4"/></svg></a>
+          <a href="https://www.tiktok.com/@flawenforcement" target="_blank" rel="noopener" aria-label="TikTok"><svg viewBox="0 0 24 24"><path d="M14 3h3c.3 2.2 1.7 3.6 4 3.8v3.1c-1.5 0-2.9-.4-4-1.2V15a6 6 0 1 1-6-6v3.2a2.9 2.9 0 1 0 3 2.8V3z"/></svg></a>
+          <a href="${waLink('Hi FLAW ENFORCEMENT!')}" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><path d="M12 2.5A9.5 9.5 0 0 0 3.8 16.8L2.6 21.4l4.7-1.2A9.5 9.5 0 1 0 12 2.5zm5.3 13.4c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-3.9-4.7-4.1-.1-.2-1.1-1.5-1.1-2.8 0-1.4.7-2 1-2.3.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .6l-.4.6-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.7-.1l1.9.9c.3.1.5.2.5.4.1.1.1.7-.1 1.2z"/></svg></a>
         </div>
-        <p class="ftr__fine mono">Prices in KSh. Secure checkout.</p>
+        <p class="ftr__copy">© ${new Date().getFullYear()} Flaw Enforcement™</p>
+        <div class="ftr__pay mono"><span>M-PESA</span><span>PAYPAL</span><span>VISA</span><span>MASTERCARD</span></div>
       </div>
     </div>
     <div class="ftr__giant d" aria-hidden="true">${glyphs('FLAW', 'LAW')}${glyphs('ENFORCEMENT')}</div>
     <div class="ftr__bar mono">
-      <span>© ${new Date().getFullYear()} Flaw Enforcement™. All flaws reserved.</span>
-      <span>Case 001: "Scars built this."</span>
+      <span>All flaws reserved · Kenya, countrywide · EAT <span data-fclock>${nairobiTime()}</span></span>
       <button class="ftr__up" type="button" data-top>Back to the top <i aria-hidden="true">↑</i></button>
     </div>`;
   ftr.querySelector('[data-top]').addEventListener('click', () => lenis.scrollTo(0, { duration: reduced ? 0 : 1.6 }));
