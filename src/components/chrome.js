@@ -3,6 +3,7 @@ import { cart } from '../store/cart.js';
 import { config, waLink } from '../config.js';
 import { gsap, lenis, lockScroll, reduced } from '../fx/scroll.js';
 import { openDrawer } from './drawer.js';
+import { flow } from '../fx/flow.js';
 
 const NAV = [
   ['/shop', 'Shop'],
@@ -116,8 +117,12 @@ export function initChrome() {
   // footer reveal: on wide screens the footer sits fixed underneath and the page slides off it
   const ftr = document.getElementById('footer');
   const syncReveal = () => {
-    const h = ftr.offsetHeight;
-    const on = !ftr.hidden && innerWidth >= 900 && h < innerHeight - 80 && !reduced;
+    document.body.classList.remove('has-reveal');
+    const wide = innerWidth >= 900;
+    const natural = ftr.offsetHeight;
+    const on = !ftr.hidden && !reduced && (wide || natural <= innerHeight);
+    document.body.classList.toggle('is-wide-reveal', on && wide);
+    const h = on && wide ? innerHeight : natural;
     document.body.classList.toggle('has-reveal', on);
     document.body.style.setProperty('--ftr-h', on ? `${h}px` : '0px');
     paintReveal();
@@ -145,16 +150,27 @@ export function initChrome() {
   const glyphs = (word, hollow = '') => `<span>${word.split('').map((c) => `<b style="--i:${gi++}"${hollow.includes(c) ? ' class="is-hollow"' : ''}>${c}</b>`).join('')}</span>`;
 
   ftr.innerHTML = `
+    <canvas class="ftr__glow" aria-hidden="true"></canvas>
     <div class="ftr__fire" aria-hidden="true">
-      <img class="ftr__peek" src="/brand/logo-lg.webp" alt="" width="700" height="252" loading="lazy" />
-      <svg class="ftr__flames" viewBox="0 0 1440 240" preserveAspectRatio="none"><path d="M0 240 L0 236 C6 183.5 45.6 153.5 74 86 C72 138.5 117.6 191 120 236 C127.5 164.25 177 123.25 213 31 C210 102.75 267 174.5 270 236 C276 194 315.6 170 344 116 C342 158 387.6 200 390 236 C398.5 157.25 454.6 112.25 495 11 C492 89.75 556.6 168.5 560 236 C565.5 187 601.8 159 628 96 C626 145 667.8 194 670 236 C681.5 202.75 757.4 183.75 813 141 C808 174.25 895.4 207.5 900 236 C905.5 187 941.8 159 968 96 C966 145 1007.8 194 1010 236 C1018.5 157.25 1074.6 112.25 1115 11 C1112 89.75 1176.6 168.5 1180 236 C1186 194 1225.6 170 1254 116 C1252 158 1297.6 200 1300 236 C1307 166 1353.2 126 1387 36 C1384 106 1437.2 176 1440 236 L1440 236 L1440 240 Z" /></svg>
+      <svg class="ftr__sky" viewBox="0 0 1440 240" preserveAspectRatio="none">
+        <defs><mask id="ftrFlames"><rect width="1440" height="240" fill="#fff" /><path d="M0 240 L0 236 C6 183.5 45.6 153.5 74 86 C72 138.5 117.6 191 120 236 C127.5 164.25 177 123.25 213 31 C210 102.75 267 174.5 270 236 C276 194 315.6 170 344 116 C342 158 387.6 200 390 236 C398.5 157.25 454.6 112.25 495 11 C492 89.75 556.6 168.5 560 236 C565.5 187 601.8 159 628 96 C626 145 667.8 194 670 236 C681.5 202.75 757.4 183.75 813 141 C808 174.25 895.4 207.5 900 236 C905.5 187 941.8 159 968 96 C966 145 1007.8 194 1010 236 C1018.5 157.25 1074.6 112.25 1115 11 C1112 89.75 1176.6 168.5 1180 236 C1186 194 1225.6 170 1254 116 C1252 158 1297.6 200 1300 236 C1307 166 1353.2 126 1387 36 C1384 106 1437.2 176 1440 236 L1440 236 L1440 240 Z" fill="#000" /></mask></defs>
+        <g mask="url(#ftrFlames)">
+          <rect width="1440" height="240" fill="#0a0a0b" />
+          <g class="ftr__siren" fill="none" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" transform="translate(720 0)">
+            <path class="ftr__dome" d="M-78 205 V128 C-78 78 -44 52 0 52 C44 52 78 78 78 128 V205" />
+            <path d="M-104 205 H104 V232 H-104 Z" />
+            <path class="ftr__shine" d="M-40 120 C-40 96 -26 82 -6 78" />
+            <path class="ftr__ray" d="M0 30 V4 M-62 44 L-80 22 M62 44 L80 22 M-104 92 L-132 80 M104 92 L132 80" />
+          </g>
+        </g>
+      </svg>
     </div>
     <div class="ftr__badge" aria-hidden="true">
       <i class="ftr__strap"></i><i class="ftr__clip"></i>
       <div class="ftr__card">
         <div class="ftr__card-top mono"><b>FE</b><span>Case 001 · Pass</span></div>
-        <img src="/lineup/11-480.webp" alt="" loading="lazy" />
-        <div class="ftr__card-bot mono"><span>Suspect №144</span><span>Kenya · 254</span></div>
+        <img src="/lineup/2-480.webp" alt="" loading="lazy" />
+        <div class="ftr__card-bot mono"><span>Suspect №047</span><span>Kenya · 254</span></div>
       </div>
     </div>
     <div class="ftr__body">
@@ -187,6 +203,8 @@ export function initChrome() {
       <button class="ftr__up" type="button" data-top>Back to the top <i aria-hidden="true">↑</i></button>
     </div>`;
   ftr.querySelector('[data-top]').addEventListener('click', () => lenis.scrollTo(0, { duration: reduced ? 0 : 1.6 }));
+  // red light drifting behind the footer and through the flames, bending around the pointer
+  flow(ftr.querySelector('.ftr__glow'), ftr, { mode: 'glow', colors: ['#2a0204', '#6e0910', '#b8141b', '#e8222c', '#ff7a80'], visible: () => !document.body.classList.contains('has-reveal') || parseFloat(ftr.style.getPropertyValue('--rv')) > 0.01 });
   const fclock = ftr.querySelector('[data-fclock]');
   setInterval(() => { fclock.textContent = nairobiTime(); }, 1000);
 }

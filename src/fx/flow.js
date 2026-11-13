@@ -163,7 +163,7 @@ const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
  * mode: 'dots' (halftone), 'glow' (smooth light with film grain) or 'contour' (flat nested bands). dot: spacing in CSS pixels.
  * Returns a function that stops it.
  */
-export function flow(canvas, host, { colors = ['#0a0a0b', '#5c060c', '#d8121d', '#ff3d47', '#ffc9cc'], dot = touch ? 7 : 9, mode = 'dots' } = {}) {
+export function flow(canvas, host, { colors = ['#0a0a0b', '#5c060c', '#d8121d', '#ff3d47', '#ffc9cc'], dot = touch ? 7 : 9, mode = 'dots', visible = null } = {}) {
   if (mode === 'glow') dot = 10; // the light is blurry, so the field can be coarse
   if (mode === 'contour') dot = 5; // band edges need a finer field to stay smooth
   const gl = canvas.getContext('webgl', { antialias: false, alpha: false, depth: false, stencil: false, powerPreference: 'low-power' });
@@ -282,7 +282,8 @@ export function flow(canvas, host, { colors = ['#0a0a0b', '#5c060c', '#d8121d', 
   let raf = 0;
   let running = false;
   let inView = false;
-  const loop = (now) => { draw(now); raf = requestAnimationFrame(loop); };
+  // visible(): optional extra check, for hosts that are always "on screen" (a fixed footer behind the page)
+  const loop = (now) => { if (!visible || visible()) draw(now); raf = requestAnimationFrame(loop); };
   const sync = () => {
     const want = inView && !document.hidden && !reduced;
     if (want && !running) { running = true; raf = requestAnimationFrame(loop); }
