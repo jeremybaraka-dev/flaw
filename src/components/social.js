@@ -14,7 +14,7 @@ const ICON = {
 
 function phone(p, i) {
   const media = p.video
-    ? `<video muted loop playsinline preload="none" poster="${srcOf(p.img, 480)}" data-src="${p.video}"></video>`
+    ? `<video muted loop playsinline preload="none" poster="${p.poster || srcOf(p.img, 480)}" data-src="${p.video}"></video>`
     : `<img src="${srcOf(p.img, 480)}" alt="" loading="lazy" decoding="async" />`;
   return `
     <div class="ph" data-post="${i}" style="--d:${(i % 4) * -2.3}s;--t:${8 + (i % 3) * 2}s">
@@ -65,7 +65,7 @@ export function mountSocial(root) {
   if (!reduced) {
     // alternate columns travel in opposite directions: some phones rise while others sink
     const small = innerWidth <= 860;
-    const speeds = small ? [-130, 150, -170, 150, -130] : [-240, 220, -300, 240, -200];
+    const speeds = small ? [-60, 50, -80, 60, -50] : [-90, 70, -140, 90, -60];
     wall.querySelectorAll('.soc__col').forEach((col, i) => {
       gsap.fromTo(col, { y: -speeds[i] }, { y: speeds[i], ease: 'none', scrollTrigger: { trigger: wall, start: 'top bottom', end: 'bottom top', scrub: 0.4 } });
     });
