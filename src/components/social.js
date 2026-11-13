@@ -51,7 +51,8 @@ export function socialWall() {
   let s = 0;
   cols.forEach((col, c) => {
     const startWithStat = c % 2 === 0;
-    for (let k = 0; k < 3; k++) {
+    // columns that start with a stat card get a fourth item, so every column runs the full height
+    for (let k = 0; k < (startWithStat ? 4 : 3); k++) {
       const wantStat = (k % 2 === 0) === startWithStat;
       col.push(wantStat ? stat(stats[s++ % stats.length]) : phone(posts[p % posts.length], p++));
     }

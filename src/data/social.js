@@ -11,6 +11,8 @@ export const posts = [
   { img: '/lineup/2', user: 'flawenforcement', caption: 'Caught walking in Irezumi 🐉', likes: 27600, comments: 774, shares: 1090, sound: 'Scars Built This · FE' },
   { img: '/lineup/5', user: 'flawenforcement', caption: 'No faces, no case. Tribal Zip-Up.', likes: 15800, comments: 351, shares: 520, sound: 'original sound · FE' },
   { img: '/lineup/7', user: 'flawenforcement', caption: 'Repeat offenders 🔁', likes: 9400, comments: 190, shares: 260, sound: 'Do Not Perfect · FE' },
+  { img: '/lineup/4', user: 'flawenforcement', caption: 'Distortion Tee. Slightly out of line.', likes: 11200, comments: 240, shares: 380, sound: 'original sound · FE' },
+  { img: '/lineup/8', user: 'flawenforcement', caption: 'Loud fit, quiet confidence. Broken Angel Sweats.', likes: 14600, comments: 330, shares: 470, sound: 'Scars Built This · FE' },
 ];
 
 export const stats = [
